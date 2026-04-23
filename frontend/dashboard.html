@@ -1,0 +1,25 @@
+<h2>Upload Crop Image</h2>
+
+<input type="file" id="file">
+<button onclick="upload()">Upload</button>
+
+<script>
+async function upload() {
+  let file = document.getElementById("file").files[0];
+  let formData = new FormData();
+  formData.append("file", file);
+
+  let res = await fetch("http://localhost:5001/upload", {
+    method: "POST",
+    body: formData
+  });
+
+  let data = await res.json();
+
+  if(data.result === "Damaged"){
+    alert("Damaged → Fill Claim Form");
+  } else {
+    alert("Healthy Crop");
+  }
+}
+</script>
