@@ -18,4 +18,14 @@ router.post("/create", async (req, res) => {
   }
 });
 
+// GET all applications
+router.get("/all", async (req, res) => {
+  try {
+    const data = await Application.find();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

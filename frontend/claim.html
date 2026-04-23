@@ -23,28 +23,26 @@ const form = document.getElementById("claimForm");
 form.addEventListener("submit", async function(e) {
   e.preventDefault();
 
-  const data = {
-    name: form.name.value,
-    mobile: form.mobile.value,
-    aadhaar: form.aadhaar.value,
-    farmerId: "12345"
-  };
+  const formData = new FormData(form);
+
+  const farmerId = localStorage.getItem("farmerId") || "12345";
+  formData.append("farmerId", farmerId);
 
   try {
-    const res = await fetch("https://YOUR-RENDER-URL/api/app/create", {
+    const res = await fetch("https://crop-insurance-app.onrender.com/api/app/create", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(data)
+      body: formData
     });
 
-    const result = await res.json();
+    const data = await res.json();
+    console.log("RESPONSE:", data);
 
-    document.getElementById("result").innerText = result.message;
+    alert("Application Submitted ✅");
 
+    window.location.href = "status.html";
   } catch (err) {
     console.log(err);
+    alert("Error submitting form ❌");
   }
 });
 </script>
