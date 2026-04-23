@@ -14,7 +14,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 // routes
 app.use("/api/app", require("./routes/app"));
-
+app.use("/api/claim", require("./routes/claim"));
 app.get("/", (req, res) => {
   res.send("API Running 🚀");
 });
