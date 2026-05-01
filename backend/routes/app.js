@@ -10,7 +10,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 
-// ===== CREATE API =====
+// ===== CREATE =====
 router.post("/create", async (req, res) => {
   try {
     const newApp = new Application(req.body);
@@ -19,13 +19,12 @@ router.post("/create", async (req, res) => {
     res.json({ success: true, message: "Application Saved ✅" });
 
   } catch (err) {
-    console.log(err);
     res.status(500).json({ error: "Server Error" });
   }
 });
 
 
-// ===== GET ALL =====
+// ===== GET =====
 router.get("/all", async (req, res) => {
   try {
     const data = await Application.find();
@@ -37,15 +36,13 @@ router.get("/all", async (req, res) => {
 });
 
 
-// ===== UPLOAD =====
+// ===== UPLOAD (ONLY ONCE) =====
 router.post("/upload", upload.single("file"), async (req, res) => {
   try {
 
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded ❌" });
     }
-
-    console.log("File received:", req.file.originalname);
 
     const result = Math.random() > 0.5 ? "damaged" : "healthy";
 
@@ -55,7 +52,6 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     });
 
   } catch (err) {
-    console.log(err);
     res.status(500).json({ message: "Upload failed ❌" });
   }
 });
