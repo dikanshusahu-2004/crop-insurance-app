@@ -26,6 +26,7 @@ mongoose.connect(process.env.MONGO_URI)
 app.use("/api/app", require("./routes/app"));
 app.use("/api/claim", require("./routes/claim"));
 app.use("/api/auth", require("./routes/auth"));
+app.use("/uploads", express.static("uploads"));
 
 
 // ✅ frontend serve
