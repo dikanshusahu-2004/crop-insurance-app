@@ -48,14 +48,14 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 
     const result = Math.random() > 0.5 ? "damaged" : "healthy";
 
-    res.json({
+    return res.json({
       success: true,
       result: result
     });
 
   } catch (err) {
     console.log(err);
-    res.status(500).json({ message: "Upload failed ❌" });
+    return res.status(500).json({ message: "Upload failed ❌" });
   }
 });
 
