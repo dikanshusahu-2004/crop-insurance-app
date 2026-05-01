@@ -32,6 +32,12 @@ const claimSchema = new mongoose.Schema({
   policy_number: String,
   sum_insured: String,
 
+  verify_image: String,
+  verify_time: Date,
+
+  lat: String,
+  lon: String,
+
   // 📊 Status
   status: {
     patwari: { type: String, default: "Pending" },

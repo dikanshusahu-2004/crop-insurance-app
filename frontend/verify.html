@@ -1,0 +1,65 @@
+<!-- verify.html -->
+
+<h2>Verify Claim</h2>
+
+<div id="details"></div>
+
+<input type="file" id="verifyImage">
+<button onclick="approve()">Approve</button>
+
+<script>
+
+const id = localStorage.getItem("claimId");
+
+async function loadDetails(){
+  const res = await fetch("https://crop-insurance-app.onrender.com/api/claim");
+  const data = await res.json();
+
+  const item = data.find(x => x._id === id);
+
+  document.getElementById("details").innerHTML = `
+    <p>Name: ${item.name}</p>
+    <p>Mobile: ${item.mobile}</p>
+    <p>Village: ${item.village}</p>
+    <p>Crop: ${item.crop_name}</p>
+    <img src="/uploads/${item.image}" width="200"/>
+  `;
+}
+
+async function approve(){
+
+  const file = document.getElementById("verifyImage").files[0];
+
+  const formData = new FormData();
+  formData.append("verify_image", file);
+
+  // ✅ GPS LOCATION ADD
+  navigator.geolocation.getCurrentPosition(async (pos) => {
+
+    const lat = pos.coords.latitude;
+    const lon = pos.coords.longitude;
+
+    formData.append("lat", lat);
+    formData.append("lon", lon);
+
+    // ✅ API CALL GPS के बाद ही करना है
+    const res = await fetch(
+      `https://crop-insurance-app.onrender.com/api/claim/patwari/${id}`,
+      {
+        method: "PUT",
+        body: formData
+      }
+    );
+
+    const data = await res.json();
+
+    alert("Approved with GPS ✅");
+    window.location.href = "patwari-dashboard.html";
+
+  }, (err) => {
+    alert("GPS Permission denied ❌");
+  });
+
+}
+
+</script>

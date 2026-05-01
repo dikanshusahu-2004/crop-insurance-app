@@ -1,0 +1,19 @@
+<!-- patwari-login.html -->
+<input id="user" placeholder="Username">
+<input id="pass" placeholder="Password" type="password">
+
+<button onclick="login()">Login</button>
+
+<script>
+function login() {
+  const user = document.getElementById("user").value;
+  const pass = document.getElementById("pass").value;
+
+  if(user === "patwari" && pass === "1234"){
+    localStorage.setItem("role", "patwari");
+    window.location.href = "patwari-dashboard.html";
+  } else {
+    alert("Invalid login ❌");
+  }
+}
+</script>

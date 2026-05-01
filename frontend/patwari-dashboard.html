@@ -1,0 +1,47 @@
+<!-- patwari-dashboard.html -->
+
+<h2>Patwari Dashboard</h2>
+
+<table border="1">
+<thead>
+<tr>
+<th>Name</th>
+<th>Mobile</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="data"></tbody>
+</table>
+
+<script>
+
+async function loadData(){
+  const res = await fetch("https://crop-insurance-app.onrender.com/api/claim");
+  const data = await res.json();
+
+  let output = "";
+
+  data.forEach(item => {
+    output += `
+      <tr>
+        <td>${item.name}</td>
+        <td>${item.mobile}</td>
+        <td>
+          <button onclick="verify('${item._id}')">Verify</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("data").innerHTML = output;
+}
+
+function verify(id){
+  localStorage.setItem("claimId", id);
+  window.location.href = "verify.html";
+}
+
+loadData();
+
+</script>

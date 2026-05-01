@@ -41,7 +41,9 @@ router.post("/", upload.single("damage_image"), async (req, res) => {
             crop_name: req.body.crop_name || "",
             sowing_date: req.body.sowing_date || "",
             season: req.body.season || "",
-
+            
+            lat: req.body.lat || "",
+            lon: req.body.lon || "",
             image: req.file ? req.file.originalname : "",
 
             bank_name: req.body.bank_name || "",
@@ -69,9 +71,29 @@ router.post("/", upload.single("damage_image"), async (req, res) => {
 
 });
 // ✅ APPROVAL ROUTES (same)
-router.put("/patwari/:id", async (req, res) => {
-  await Claim.findByIdAndUpdate(req.params.id, { "status.patwari": "Approved" });
-  res.json({ message: "Patwari Approved ✅" });
+router.put("/patwari/:id", upload.single("verify_image"), async (req, res) => {
+  try {
+
+    const updated = await Claim.findByIdAndUpdate(
+  req.params.id,
+  {
+    "status.patwari": "Approved",
+
+    verify_image: req.file ? req.file.originalname : "",
+
+    lat: req.body.lat || "",
+    lon: req.body.lon || "",
+
+    verify_time: new Date()
+  },
+  { new: true }
+);
+
+    res.json({ message: "Patwari Verified ✅", data: updated });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 router.put("/insurance/:id", async (req, res) => {
