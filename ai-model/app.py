@@ -1,28 +1,39 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS   # 👈 पहले import
+from flask_cors import CORS
 
 from PIL import Image
 import numpy as np
+import os
+
 from tensorflow.keras.applications.mobilenet_v2 import MobileNetV2, preprocess_input
 
-app = Flask(__name__)   # 👈 पहले app बनाओ
-CORS(app)               # 👈 उसके बाद CORS लगाओ
 
+app = Flask(__name__)
+CORS(app)
+
+
+# ✅ Load model (once)
 model = MobileNetV2(weights="imagenet")
 
+
+# ✅ Preprocess function
 def preprocess(img):
-    img = img.resize((224,224))
+    img = img.resize((224, 224))
     img = np.array(img)
     img = preprocess_input(img)
     img = np.expand_dims(img, axis=0)
     return img
 
-@app.route("/predict", methods=["GET","POST"])
+
+# ✅ Route
+@app.route("/predict", methods=["GET", "POST"])
 def predict():
 
+    # health check
     if request.method == "GET":
         return "AI Running 🚀"
 
+    # file check
     if "image" not in request.files:
         return jsonify({"error": "No image"}), 400
 
@@ -31,12 +42,12 @@ def predict():
     try:
         print("FILE RECEIVED:", file.filename)
 
-        img = Image.open(file.stream)
+        img = Image.open(file.stream).convert("RGB")
         img = preprocess(img)
 
         pred = model.predict(img)
 
-        # demo logic
+        # ⚠️ अभी demo logic (real AI नहीं)
         import random
         if random.random() > 0.3:
             result = "Healthy 🌱"
@@ -50,5 +61,7 @@ def predict():
         return jsonify({"error": str(e)}), 500
 
 
+# ✅ IMPORTANT for Render
 if __name__ == "__main__":
-    app.run(port=5001)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
