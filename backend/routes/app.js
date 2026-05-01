@@ -34,9 +34,14 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     const formData = new FormData();
     formData.append("image", req.file.buffer, req.file.originalname);
 
-    const response = await axios.post("https://crop-ai-api-vqcm.onrender.com", formData, {
-      headers: formData.getHeaders()
-    });
+   const response = await axios.post(
+  "https://crop-ai-api-vqcm.onrender.com/predict",
+  formData,
+  {
+    headers: formData.getHeaders(),
+    timeout: 10000
+  }
+);
 
     console.log("AI RESPONSE:", response.data);
 
