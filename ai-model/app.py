@@ -4,24 +4,10 @@ from flask_cors import CORS
 from PIL import Image
 import numpy as np
 import os
-
-
+import hashlib   # 👈 IMPORTANT
 
 app = Flask(__name__)
 CORS(app)
-
-
-
-
-
-# ✅ Preprocess function
-def preprocess(img):
-    img = img.resize((224, 224))
-    img = np.array(img)
-    img = preprocess_input(img)
-    img = np.expand_dims(img, axis=0)
-    return img
-
 
 # ✅ Route
 @app.route("/predict", methods=["GET", "POST"])
@@ -40,14 +26,14 @@ def predict():
     try:
         print("FILE RECEIVED:", file.filename)
 
+        # 👇 image read (optional, for future use)
         img = Image.open(file.stream).convert("RGB")
-        img = preprocess(img)
 
-        
+        # ✅ STABLE LOGIC (NO AI, BUT SAME RESULT ALWAYS)
+        file_bytes = file.read()
+        hash_val = int(hashlib.md5(file_bytes).hexdigest(), 16)
 
-        # ⚠️ अभी demo logic (real AI नहीं)
-        import random
-        if random.random() > 0.3:
+        if hash_val % 2 == 0:
             result = "Healthy 🌱"
         else:
             result = "Damaged ⚠️"
