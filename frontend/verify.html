@@ -1,65 +1,178 @@
-<!-- verify.html -->
+<!DOCTYPE html>
+<html>
 
-<h2>Verify Claim</h2>
+<head>
+    <title>Patwari Verification</title>
 
-<div id="details"></div>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<input type="file" id="verifyImage">
-<button onclick="approve()">Approve</button>
+    <style>
+        body { background: #f5f7fa; }
+        .card { border-radius: 12px; }
+        img { border-radius: 10px; margin-top:10px; }
+    </style>
+
+</head>
+
+<body>
+
+<div class="container mt-4">
+<div class="card shadow p-4">
+
+<h3 class="text-primary mb-3">🔍 Claim Verification</h3>
+
+<!-- Farmer Details -->
+<div class="row">
+    <div class="col-md-6">
+        <h5 class="text-success">Farmer Details</h5>
+        <p><b>Name:</b> <span id="name"></span></p>
+        <p><b>Mobile:</b> <span id="mobile"></span></p>
+        <p><b>Village:</b> <span id="village"></span></p>
+        <p><b>District:</b> <span id="district"></span></p>
+    </div>
+
+    <div class="col-md-6">
+        <h5 class="text-success">Crop Details</h5>
+        <p><b>Crop:</b> <span id="crop"></span></p>
+        <p><b>Season:</b> <span id="season"></span></p>
+    </div>
+</div>
+
+<hr>
+
+<!-- Farmer Image -->
+<h5 class="text-danger">Farmer Uploaded Image</h5>
+<img id="farmerImage" width="250">
+
+<hr>
+
+<!-- Survey Image -->
+<h5 class="text-primary">Patwari Survey Image</h5>
+<input type="file" id="verifyImage" class="form-control mb-2">
+
+<img id="preview" width="250">
+
+<hr>
+
+<!-- Notes -->
+<label>Survey Notes</label>
+<textarea id="notesInput" class="form-control"></textarea>
+
+<label class="mt-2">Actual Yield</label>
+<input type="number" id="yieldInput" class="form-control">
+
+<!-- Buttons -->
+<button onclick="approve()" class="btn btn-success mt-3 w-100">
+    Approve Claim
+</button>
+
+<button onclick="reject()" class="btn btn-danger mt-2 w-100">
+    Reject Claim
+</button>
+
+<a href="patwari-dashboard.html" class="btn btn-secondary mt-2 w-100">
+    Back
+</a>
+
+</div>
+</div>
 
 <script>
 
+// ✅ ID localStorage से लो (तुम्हारे dashboard से)
 const id = localStorage.getItem("claimId");
 
-async function loadDetails(){
-  const res = await fetch("https://crop-insurance-app.onrender.com/api/claim");
-  const data = await res.json();
-
-  const item = data.find(x => x._id === id);
-
-  document.getElementById("details").innerHTML = `
-    <p>Name: ${item.name}</p>
-    <p>Mobile: ${item.mobile}</p>
-    <p>Village: ${item.village}</p>
-    <p>Crop: ${item.crop_name}</p>
-    <img src="/uploads/${item.image}" width="200"/>
-  `;
+if (!id) {
+    alert("Invalid ID ❌");
 }
 
-async function approve(){
+// 🔥 LOAD DATA
+async function loadDetails(){
 
-  const file = document.getElementById("verifyImage").files[0];
-
-  const formData = new FormData();
-  formData.append("verify_image", file);
-
-  // ✅ GPS LOCATION ADD
-  navigator.geolocation.getCurrentPosition(async (pos) => {
-
-    const lat = pos.coords.latitude;
-    const lon = pos.coords.longitude;
-
-    formData.append("lat", lat);
-    formData.append("lon", lon);
-
-    // ✅ API CALL GPS के बाद ही करना है
-    const res = await fetch(
-      `https://crop-insurance-app.onrender.com/api/claim/patwari/${id}`,
-      {
-        method: "PUT",
-        body: formData
-      }
-    );
-
+    const res = await fetch("https://crop-insurance-app.onrender.com/api/claim");
     const data = await res.json();
 
-    alert("Approved with GPS ✅");
-    window.location.href = "patwari-dashboard.html";
+    const item = data.find(x => x._id === id);
 
-  }, (err) => {
-    alert("GPS Permission denied ❌");
-  });
+    document.getElementById("name").innerText = item.name;
+    document.getElementById("mobile").innerText = item.mobile;
+    document.getElementById("village").innerText = item.village;
+    document.getElementById("district").innerText = item.district;
+
+    document.getElementById("crop").innerText = item.crop_name;
+    document.getElementById("season").innerText = item.season;
+
+    document.getElementById("farmerImage").src =
+        "https://crop-insurance-app.onrender.com/uploads/" + item.image;
+}
+
+// 🔥 IMAGE PREVIEW
+document.getElementById("verifyImage").addEventListener("change", function(e){
+    const file = e.target.files[0];
+    if(file){
+        document.getElementById("preview").src = URL.createObjectURL(file);
+    }
+});
+
+// ✅ APPROVE WITH GPS
+async function approve(){
+
+    const file = document.getElementById("verifyImage").files[0];
+
+    if(!file){
+        alert("Upload survey image ❌");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("verify_image", file);
+
+    // GPS
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+
+        formData.append("lat", pos.coords.latitude);
+        formData.append("lon", pos.coords.longitude);
+
+        const res = await fetch(
+            `https://crop-insurance-app.onrender.com/api/claim/patwari/${id}`,
+            {
+                method: "PUT",
+                body: formData
+            }
+        );
+
+        const data = await res.json();
+
+        alert("Approved with GPS ✅");
+        window.location.href = "patwari-dashboard.html";
+
+    }, () => {
+        alert("GPS permission denied ❌");
+    });
 
 }
 
+// ❌ REJECT
+async function reject(){
+
+    await fetch(
+        `https://crop-insurance-app.onrender.com/api/claim/patwari/${id}`,
+        {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                status: "Rejected"
+            })
+        }
+    );
+
+    alert("Claim Rejected ❌");
+    window.location.href = "patwari-dashboard.html";
+}
+
+loadDetails();
+
 </script>
+
+</body>
+</html>
