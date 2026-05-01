@@ -1,8 +1,16 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+
 const Application = require("../models/Application");
 
-// ✅ CREATE API
+
+// ================== MULTER SETUP ==================
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+
+// ================== CREATE API ==================
 router.post("/create", async (req, res) => {
   try {
     console.log(req.body);
@@ -18,7 +26,8 @@ router.post("/create", async (req, res) => {
   }
 });
 
-// GET all applications
+
+// ================== GET ALL ==================
 router.get("/all", async (req, res) => {
   try {
     const data = await Application.find();
@@ -28,4 +37,32 @@ router.get("/all", async (req, res) => {
   }
 });
 
+
+// ================== UPLOAD API ==================
+router.post("/upload", upload.single("file"), async (req, res) => {
+  try {
+
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded ❌" });
+    }
+
+    console.log("File received:", req.file.originalname);
+
+    // 🔥 अभी के लिए dummy AI result
+    // बाद में AI model connect करेंगे
+    const result = Math.random() > 0.5 ? "damaged" : "healthy";
+
+    res.json({
+      success: true,
+      result: result
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Upload failed ❌" });
+  }
+});
+
+
+// ================== EXPORT ==================
 module.exports = router;
