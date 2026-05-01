@@ -41,8 +41,10 @@ router.post("/upload", upload.single("file"), async (req, res) => {
   try {
 
     if (!req.file) {
-  return res.status(400).json({ message: "No file uploaded ❌" });
-}
+      return res.status(400).json({ message: "No file uploaded ❌" });
+    }
+
+    console.log("File received:", req.file.originalname);
 
     const result = Math.random() > 0.5 ? "damaged" : "healthy";
 
@@ -52,10 +54,10 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     });
 
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: "Upload failed ❌" });
   }
 });
-
 
 // ===== EXPORT =====
 module.exports = router;
