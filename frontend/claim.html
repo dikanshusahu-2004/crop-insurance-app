@@ -53,14 +53,9 @@ h5 {
 </select>
 
 <!-- Damage -->
-<h5 class="text-primary">4️⃣ Damage Detection (AI)</h5>
-<input type="file" id="image" class="form-control mb-2" required>
+<h5 class="text-primary">4️⃣ Upload Crop Damage Image</h5>
 
-<button type="button" class="btn btn-warning w-100 mb-2" onclick="checkAI()">
-Check Crop Damage
-</button>
-
-<p id="aiResult" class="fw-bold text-center"></p>
+<input type="file" id="image" class="form-control mb-3" required>
 
 <!-- Bank -->
 <h5 class="text-primary">5️⃣ Bank Details</h5>
@@ -84,7 +79,6 @@ Submit Claim
 
 <script>
 
-let isDamaged = false; // 🔥 important flag
 
 // 🔥 AI CHECK
 async function checkAI() {
@@ -135,10 +129,7 @@ document.getElementById("claimForm").addEventListener("submit", async function(e
 
     e.preventDefault();
 
-    if (!isDamaged) {
-        alert("❌ Cannot submit claim. Crop is healthy.");
-        return;
-    }
+    
 
     const formData = new FormData();
 
