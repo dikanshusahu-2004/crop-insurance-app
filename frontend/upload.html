@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Upload Crop Image</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #56ab2f, #a8e063);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            width: 350px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .upload-box {
+            border: 2px dashed #56ab2f;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #56ab2f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #3d8b1e;
+        }
+
+        #result {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        img {
+            margin-top: 10px;
+            max-width: 100%;
+            border-radius: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>🌱 Upload Crop Image</h2>
+
+    <div class="upload-box" onclick="document.getElementById('file').click()">
+        <p>Select Image</p>
+        <input type="file" id="file" onchange="previewImage(event)">
+        <p id="fileName">No file selected</p>
+    </div>
+
+    <img id="preview" style="display:none;">
+
+    <button onclick="uploadImage()">Upload</button>
+
+    <p id="result"></p>
+
+</div>
+
+<script>
+
+function previewImage(event) {
+    const file = event.target.files[0];
+
+    if (file) {
+        document.getElementById("fileName").innerText = file.name;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.getElementById("preview");
+            img.src = e.target.result;
+            img.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+async function uploadImage() {
+
+    const file = document.getElementById("file").files[0];
+
+    if (!file) {
+        alert("Please select file ❌");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+
+        const res = await fetch("https://crop-insurance-app.onrender.com/api/app/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await res.json();
+
+        console.log("FULL RESPONSE:", data);
+
+        document.getElementById("result").innerText = "Result: " + data.result;
+
+        // ✅ DAMAGE CHECK
+        if (data.result && data.result.toLowerCase() === "damaged") {
+            alert("Crop Damaged ⚠️ Redirecting to Claim...");
+            window.location.href = "claim.html";
+        } else {
+            alert("Crop Healthy ✅");
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("Upload failed ❌");
+    }
+}
+
+</script>
+
+</body>
+</html>
