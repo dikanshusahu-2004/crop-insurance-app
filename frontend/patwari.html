@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Patwari Panel</title>
+</head>
+<body>
+
+<h2>🧑‍🌾 Patwari Approval Panel</h2>
+
+<button onclick="loadClaims()">Load Claims</button>
+
+<table border="1" width="80%" align="center">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Mobile</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="tableBody"></tbody>
+</table>
+
+<script>
+
+async function loadClaims() {
+  const res = await fetch("http://localhost:5000/api/claim");
+  const data = await res.json();
+
+  let html = "";
+
+  data.forEach(claim => {
+    html += `
+      <tr>
+        <td>${claim.name}</td>
+        <td>${claim.mobile}</td>
+        <td>${claim.status.patwari}</td>
+        <td>
+          <button onclick="approve('${claim._id}')">Approve</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("tableBody").innerHTML = html;
+}
+
+async function approve(id) {
+  await fetch(`http://localhost:5000/api/claim/patwari/${id}`, {
+    method: "PUT"
+  });
+
+  alert("Approved ✅");
+  loadClaims();
+}
+
+</script>
+
+</body>
+</html>

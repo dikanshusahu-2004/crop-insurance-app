@@ -1,0 +1,46 @@
+<h2>Bank Panel</h2>
+
+<table border="1">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Status</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody id="data"></tbody>
+</table>
+
+<script>
+async function load() {
+  const res = await fetch("http://localhost:5000/api/claim");
+  const data = await res.json();
+
+  let html = "";
+
+  data.forEach(c => {
+    html += `
+      <tr>
+        <td>${c.name}</td>
+        <td>${c.status.bank}</td>
+        <td>
+          <button onclick="approve('${c._id}')">Approve</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  document.getElementById("data").innerHTML = html;
+}
+
+async function approve(id) {
+  await fetch(`http://localhost:5000/api/claim/bank/${id}`, {
+    method: "PUT"
+  });
+
+  alert("Bank Approved 💰");
+  load();
+}
+
+load();
+</script>

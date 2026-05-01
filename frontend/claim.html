@@ -3,48 +3,94 @@
 <head>
   <title>Claim Form</title>
 </head>
+
 <body>
 
-<h2>Crop Insurance Claim</h2>
+<h2>🌾 Crop Insurance Claim</h2>
 
-<form id="claimForm">
-  <input type="text" name="name" placeholder="Name" required><br><br>
-  <input type="text" name="mobile" placeholder="Mobile" required><br><br>
-  <input type="text" name="aadhaar" placeholder="Aadhaar" required><br><br>
+<form id="claimForm" onsubmit="event.preventDefault()">
 
-  <button type="submit">Submit</button>
+  <input type="text" id="name" placeholder="Name" required><br><br>
+  <input type="text" id="mobile" placeholder="Mobile" required><br><br>
+  <input type="text" id="aadhaar" placeholder="Aadhaar" required><br><br>
+
+  <input type="file" id="image"><br><br>
+
+  <button type="button" onclick="checkImage()">Check Damage</button>
+
 </form>
 
-<p id="result"></p>
+<p id="resultAI"></p>
 
 <script>
-const form = document.getElementById("claimForm");
 
-form.addEventListener("submit", async function(e) {
-  e.preventDefault();
+function checkImage() {
 
-  const formData = new FormData(form);
+  const fileInput = document.getElementById("image");
+  const name = document.getElementById("name").value;
+  const mobile = document.getElementById("mobile").value;
+  const aadhaar = document.getElementById("aadhaar").value;
 
-  const farmerId = localStorage.getItem("farmerId") || "12345";
-  formData.append("farmerId", farmerId);
-
-  try {
-    const res = await fetch("https://crop-insurance-app.onrender.com/api/app/create", {
-      method: "POST",
-      body: formData
-    });
-
-    const data = await res.json();
-    console.log("RESPONSE:", data);
-
-    alert("Application Submitted ✅");
-
-    window.location.href = "status.html";
-  } catch (err) {
-    console.log(err);
-    alert("Error submitting form ❌");
+  // ✅ Validation
+  if (!fileInput.files.length) {
+    alert("Select image first ❌");
+    return;
   }
-});
+
+  if (!name || !mobile || !aadhaar) {
+    alert("Fill all details ❌");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("image", fileInput.files[0]);
+
+  // 🔵 STEP 1: AI Check
+  fetch("http://127.0.0.1:5001/predict", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+
+    document.getElementById("resultAI").innerText = data.result;
+
+    // 🔥 अगर damaged है तभी save होगा
+    if (data.result.includes("Damaged")) {
+
+      fetch("http://localhost:5000/api/claim", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          name: name,
+          mobile: mobile,
+          aadhaar: aadhaar
+        })
+      })
+      .then(res => res.json())
+      .then(response => {
+        console.log(response);
+        alert("✅ Claim Submitted Successfully");
+      })
+      .catch(err => {
+        console.error(err);
+        alert("❌ Claim Failed");
+      });
+
+    } else {
+      alert("🌱 No damage detected → No claim needed");
+    }
+
+  })
+  .catch(err => {
+    console.error(err);
+    alert("❌ AI Error");
+  });
+
+}
+
 </script>
 
 </body>

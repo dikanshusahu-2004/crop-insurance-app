@@ -1,23 +1,43 @@
-<h2>Register</h2>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+</head>
+<body style="text-align:center; margin-top:50px;">
 
-<input id="name" placeholder="Name">
-<input id="password" placeholder="Password" type="password">
+  <h2>Register</h2>
 
-<button onclick="register()">Register</button>
+  <input type="text" id="name" placeholder="Name"><br><br>
+  <input type="text" id="mobile" placeholder="Mobile"><br><br>
+  <input type="password" id="password" placeholder="Password"><br><br>
+
+  <select id="role">
+    <option value="farmer">Farmer</option>
+    <option value="patwari">Patwari</option>
+    <option value="insurance">Insurance</option>
+    <option value="bank">Bank</option>
+  </select><br><br>
+
+  <button onclick="register()">Register</button>
 
 <script>
 async function register() {
   const name = document.getElementById("name").value;
+  const mobile = document.getElementById("mobile").value;
   const password = document.getElementById("password").value;
+  const role = document.getElementById("role").value;
 
-  const res = await fetch("http://localhost:5001/api/auth/register", {
+  const res = await fetch("http://localhost:5000/api/auth/register", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ name, password })
+    body: JSON.stringify({ name, mobile, password, role })
   });
 
   const data = await res.json();
 
-  alert("Your Farmer ID: " + data.farmerId);
+  alert(data.message);
 }
 </script>
+
+</body>
+</html>

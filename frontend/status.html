@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Claim Status</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+    }
+
+    table {
+      margin: auto;
+      border-collapse: collapse;
+      width: 80%;
+    }
+
+    th {
+      background: black;
+      color: white;
+      padding: 10px;
+    }
+
+    td {
+      padding: 10px;
+      border: 1px solid gray;
+    }
+  </style>
+</head>
+
+<body>
+
+<h2>📊 Claim Status</h2>
+
+<button onclick="loadStatus()">Load Status</button>
+
+<br><br>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Patwari</th>
+      <th>Insurance</th>
+      <th>Bank</th>
+    </tr>
+  </thead>
+
+  <tbody id="tableBody">
+    <tr>
+      <td colspan="4">Click "Load Status"</td>
+    </tr>
+  </tbody>
+</table>
+
+<script>
+
+async function loadStatus() {
+
+  try {
+    const res = await fetch("http://localhost:5000/api/claim");
+    const data = await res.json();
+
+    console.log("DATA:", data); // 🔍 debug
+
+    let rows = "";
+
+    data.forEach(item => {
+      rows += `
+        <tr>
+          <td>${item.name}</td>
+          <td>${item.status?.patwari || "Pending"}</td>
+          <td>${item.status?.insurance || "Pending"}</td>
+          <td>${item.status?.bank || "Pending"}</td>
+        </tr>
+      `;
+    });
+
+    document.getElementById("tableBody").innerHTML = rows;
+
+  } catch (err) {
+    console.error(err);
+    alert("Error loading data ❌");
+  }
+
+}
+
+</script>
+
+</body>
+</html>
