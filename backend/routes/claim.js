@@ -1,23 +1,54 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
 
-const Claim = require("../models/Application");
+const Claim = require("../models/Application"); // check path सही हो
 
-// GET all claims
+// 🔥 multer setup
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+// ✅ GET all claims
 router.get("/", async (req, res) => {
-  const data = await Claim.find();
-  res.json(data);
+  try {
+    const data = await Claim.find();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
-// SAVE claim (ONLY ONE ROUTE)
-router.post("/", async (req, res) => {
+// ✅ SAVE FULL CLAIM (IMAGE + ALL DATA)
+router.post("/", upload.single("damage_image"), async (req, res) => {
   try {
-    console.log("DATA RECEIVED:", req.body);
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
 
     const newClaim = new Claim({
       name: req.body.name,
       mobile: req.body.mobile,
       aadhaar: req.body.aadhaar,
+
+      khasra: req.body.khasra,
+      land_area: req.body.land_area,
+      village: req.body.village,
+      district: req.body.district,
+
+      crop_name: req.body.crop_name,
+      sowing_date: req.body.sowing_date,
+      season: req.body.season,
+
+      damage_type: req.body.damage_type,
+      incident_date: req.body.incident_date,
+
+      image: req.file ? req.file.originalname : "",
+
+      bank_name: req.body.bank_name,
+      account_number: req.body.account_number,
+      ifsc_code: req.body.ifsc_code,
+
+      policy_number: req.body.policy_number,
+      sum_insured: req.body.sum_insured,
 
       status: {
         patwari: "Pending",
@@ -36,24 +67,20 @@ router.post("/", async (req, res) => {
   }
 });
 
-// UPDATE PATWARI STATUS
+// ✅ PATWARI APPROVE
 router.put("/patwari/:id", async (req, res) => {
   try {
-    const updated = await Claim.findByIdAndUpdate(
-      req.params.id,
-      { "status.patwari": "Approved" },
-      { new: true }
-    );
-
-    console.log("UPDATED:", updated);
+    await Claim.findByIdAndUpdate(req.params.id, {
+      "status.patwari": "Approved"
+    });
 
     res.json({ message: "Patwari Approved ✅" });
   } catch (err) {
-    console.error(err);
     res.status(500).json({ error: err.message });
   }
 });
-// INSURANCE APPROVAL
+
+// ✅ INSURANCE APPROVE
 router.put("/insurance/:id", async (req, res) => {
   try {
     await Claim.findByIdAndUpdate(req.params.id, {
@@ -66,8 +93,7 @@ router.put("/insurance/:id", async (req, res) => {
   }
 });
 
-
-// BANK APPROVAL
+// ✅ BANK APPROVE
 router.put("/bank/:id", async (req, res) => {
   try {
     await Claim.findByIdAndUpdate(req.params.id, {
