@@ -2,40 +2,107 @@
 <html>
 <head>
   <title>Register</title>
-</head>
-<body style="text-align:center; margin-top:50px;">
 
+  <style>
+    body {
+      font-family: Arial;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+
+    .box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 320px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #5a67d8;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="box">
   <h2>Register</h2>
 
-  <input type="text" id="name" placeholder="Name"><br><br>
-  <input type="text" id="mobile" placeholder="Mobile"><br><br>
-  <input type="password" id="password" placeholder="Password"><br><br>
+  <input type="text" id="name" placeholder="Name">
+  <input type="text" id="mobile" placeholder="Mobile">
+  <input type="password" id="password" placeholder="Password">
 
   <select id="role">
     <option value="farmer">Farmer</option>
     <option value="patwari">Patwari</option>
     <option value="insurance">Insurance</option>
     <option value="bank">Bank</option>
-  </select><br><br>
+  </select>
 
   <button onclick="register()">Register</button>
+</div>
 
 <script>
 async function register() {
+
   const name = document.getElementById("name").value;
   const mobile = document.getElementById("mobile").value;
   const password = document.getElementById("password").value;
   const role = document.getElementById("role").value;
 
-  const res = await fetch("http://localhost:5000/api/auth/register", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ name, mobile, password, role })
-  });
+  if (!name || !mobile || !password) {
+    alert("Fill all fields ⚠️");
+    return;
+  }
 
-  const data = await res.json();
+  try {
+    const res = await fetch("https://crop-insurance-app.onrender.com/api/auth/register", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ name, mobile, password, role })
+    });
 
-  alert(data.message);
+    const data = await res.json();
+
+    if (res.ok) {
+      alert("Registered Successfully ✅");
+      window.location = "login.html";
+    } else {
+      alert(data.message || "Error ❌");
+    }
+
+  } catch (err) {
+    alert("Server Error ❌");
+    console.log(err);
+  }
 }
 </script>
 
