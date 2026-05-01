@@ -101,7 +101,8 @@ async function checkAI() {
 
     try {
 
-        const res = await fetch("https://crop-insurance-app.onrender.com/api/app/upload", {
+        const res = await // ✅ NEW (सही)
+fetch("https://crop-insurance-app.onrender.com/api/app/create", {
             method: "POST",
             body: formData
         });
@@ -139,28 +140,35 @@ document.getElementById("claimForm").addEventListener("submit", async function(e
         return;
     }
 
-    const data = {
-        name: document.getElementById("name").value,
-        mobile: document.getElementById("mobile").value,
-        aadhaar: document.getElementById("aadhaar").value,
-        khasra: document.getElementById("khasra").value,
-        land_area: document.getElementById("land_area").value,
-        village: document.getElementById("village").value,
-        district: document.getElementById("district").value,
-        crop_name: document.getElementById("crop_name").value,
-        bank: document.getElementById("bank").value,
-        account: document.getElementById("account").value,
-        ifsc: document.getElementById("ifsc").value,
-        policy: document.getElementById("policy").value,
-        amount: document.getElementById("amount").value
-    };
+    const formData = new FormData();
+
+    formData.append("name", document.getElementById("name").value);
+    formData.append("mobile", document.getElementById("mobile").value);
+    formData.append("aadhaar", document.getElementById("aadhaar").value);
+
+    formData.append("khasra", document.getElementById("khasra").value);
+    formData.append("land_area", document.getElementById("land_area").value);
+    formData.append("village", document.getElementById("village").value);
+    formData.append("district", document.getElementById("district").value);
+
+    formData.append("crop_name", document.getElementById("crop_name").value);
+    formData.append("sowing_date", document.getElementById("sowing_date").value);
+    formData.append("season", document.getElementById("season").value);
+
+    formData.append("bank_name", document.getElementById("bank").value);
+    formData.append("account_number", document.getElementById("account").value);
+    formData.append("ifsc_code", document.getElementById("ifsc").value);
+
+    formData.append("policy_number", document.getElementById("policy").value);
+    formData.append("sum_insured", document.getElementById("amount").value);
+
+    formData.append("damage_image", document.getElementById("image").files[0]);
 
     try {
 
-        const res = await fetch("https://crop-insurance-app.onrender.com/api/claim", {
+        const res = await fetch("https://crop-insurance-app.onrender.com/api/app/create", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
+            body: formData
         });
 
         const result = await res.json();
