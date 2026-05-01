@@ -56,36 +56,37 @@
 <script>
 
 async function loadStatus() {
+    try {
 
-  try {
-    const res = await fetch("http://localhost:5000/api/claim");
-    const data = await res.json();
+        const res = await fetch("https://crop-insurance-app.onrender.com/api/claim");
 
-    console.log("DATA:", data); // 🔍 debug
+        const data = await res.json();
 
-    let rows = "";
+        console.log("DATA:", data);
 
-    data.forEach(item => {
-      rows += `
-        <tr>
-          <td>${item.name}</td>
-          <td>${item.status?.patwari || "Pending"}</td>
-          <td>${item.status?.insurance || "Pending"}</td>
-          <td>${item.status?.bank || "Pending"}</td>
-        </tr>
-      `;
-    });
+        let output = "";
 
-    document.getElementById("tableBody").innerHTML = rows;
+        data.forEach(item => {
+            output += `
+                <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+                    <b>Name:</b> ${item.name} <br>
+                    <b>Mobile:</b> ${item.mobile} <br>
+                    <b>Status:</b> 
+                        Patwari: ${item.status.patwari} | 
+                        Insurance: ${item.status.insurance} | 
+                        Bank: ${item.status.bank}
+                </div>
+            `;
+        });
 
-  } catch (err) {
-    console.error(err);
-    alert("Error loading data ❌");
-  }
+        document.getElementById("result").innerHTML = output;
 
+    } catch (err) {
+        console.error(err);
+        alert("Error loading data ❌");
+    }
 }
 
 </script>
-
 </body>
 </html>
