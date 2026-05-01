@@ -13,12 +13,11 @@ const upload = multer({ storage });
 
 // CREATE
 router.post("/create", async (req, res) => {
-  ...
+  res.json({ message: "Create working" });
 });
 
-// GET
 router.get("/all", async (req, res) => {
-  ...
+  res.json({ message: "Get working" });
 });
 
 // 🔥 UPLOAD (AI CONNECTED)
