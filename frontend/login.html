@@ -2,45 +2,128 @@
 <html>
 <head>
   <title>Login</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #4facfe, #00f2fe);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 300px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #4facfe;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #4facfe;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #00c6ff;
+    }
+
+    .loading {
+      display: none;
+      margin-top: 10px;
+      font-size: 14px;
+      color: gray;
+    }
+  </style>
 </head>
-<body style="text-align:center; margin-top:50px;">
 
-  <h2>Login</h2>
+<body>
 
-  <input type="text" id="mobile" placeholder="Mobile"><br><br>
-  <input type="password" id="password" placeholder="Password"><br><br>
+  <div class="login-box">
+    <h2>Login</h2>
 
-  <button onclick="login()">Login</button>
+    <input type="text" id="mobile" placeholder="Mobile">
+    <input type="password" id="password" placeholder="Password">
+
+    <button onclick="login()">Login</button>
+
+    <div class="loading" id="loading">Checking...</div>
+  </div>
 
 <script>
 async function login() {
+
   const mobile = document.getElementById("mobile").value;
   const password = document.getElementById("password").value;
 
-  const res = await fetch("http://localhost:5000/api/auth/login", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ mobile, password })
-  });
+  if (!mobile || !password) {
+    alert("Please fill all fields ⚠️");
+    return;
+  }
 
-  const data = await res.json();
+  document.getElementById("loading").style.display = "block";
 
-  if (res.ok) {
-    alert("Login Success ✅");
+  try {
+    const res = await fetch("https://crop-insurance-app.onrender.com/api/auth/login", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ mobile, password })
+    });
 
-    // 👉 role based redirect
-    if (data.user.role === "farmer") {
-      window.location = "farmer.html";
-    } else if (data.user.role === "patwari") {
-      window.location = "patwari.html";
-    } else if (data.user.role === "insurance") {
-      window.location = "insurance.html";
-    } else if (data.user.role === "bank") {
-      window.location = "bank.html";
+    const data = await res.json();
+
+    document.getElementById("loading").style.display = "none";
+
+    if (res.ok) {
+      alert("Login Success ✅");
+
+      // role based redirect
+      if (data.user.role === "farmer") {
+        window.location = "dashboard.html";
+      } else if (data.user.role === "patwari") {
+        window.location = "patwari.html";
+      } else if (data.user.role === "insurance") {
+        window.location = "insurance.html";
+      } else if (data.user.role === "bank") {
+        window.location = "bank.html";
+      }
+
+    } else {
+      alert(data.message || "Login Failed ❌");
     }
 
-  } else {
-    alert(data.message);
+  } catch (err) {
+    document.getElementById("loading").style.display = "none";
+    alert("Server error ❌");
+    console.log(err);
   }
 }
 </script>
