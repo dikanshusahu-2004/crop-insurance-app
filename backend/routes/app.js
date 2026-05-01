@@ -2,41 +2,26 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 
+const axios = require("axios");
+const FormData = require("form-data");
+
 const Application = require("../models/Application");
 
-
-// ===== MULTER =====
+// multer
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-
-// ===== CREATE =====
+// CREATE
 router.post("/create", async (req, res) => {
-  try {
-    const newApp = new Application(req.body);
-    await newApp.save();
-
-    res.json({ success: true, message: "Application Saved ✅" });
-
-  } catch (err) {
-    res.status(500).json({ error: "Server Error" });
-  }
+  ...
 });
 
-
-// ===== GET =====
+// GET
 router.get("/all", async (req, res) => {
-  try {
-    const data = await Application.find();
-    res.json(data);
-
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  ...
 });
 
-
-// ===== UPLOAD (ONLY ONCE) =====
+// 🔥 UPLOAD (AI CONNECTED)
 router.post("/upload", upload.single("file"), async (req, res) => {
   try {
 
@@ -44,20 +29,26 @@ router.post("/upload", upload.single("file"), async (req, res) => {
       return res.status(400).json({ message: "No file uploaded ❌" });
     }
 
-    console.log("File received:", req.file.originalname);
+    console.log("Sending to AI...");
 
-    const result = Math.random() > 0.5 ? "damaged" : "healthy";
+    const formData = new FormData();
+    formData.append("image", req.file.buffer, req.file.originalname);
 
-    return res.json({
+    const response = await axios.post("http://127.0.0.1:5001/predict", formData, {
+      headers: formData.getHeaders()
+    });
+
+    console.log("AI RESPONSE:", response.data);
+
+    res.json({
       success: true,
-      result: result
+      result: response.data.result
     });
 
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "Upload failed ❌" });
+    console.error("AI ERROR:", err.message);
+    res.status(500).json({ message: "AI Failed ❌" });
   }
 });
 
-// ===== EXPORT =====
 module.exports = router;
