@@ -1,95 +1,182 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Claim Form</title>
+<title>Crop Insurance Claim</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body {
+    background: linear-gradient(to right, #d4fc79, #96e6a1);
+}
+.card {
+    border-radius: 15px;
+}
+h5 {
+    margin-top: 15px;
+}
+</style>
+
 </head>
 
 <body>
 
-<h2>🌾 Crop Insurance Claim</h2>
+<div class="container mt-5">
+<div class="card shadow p-4">
 
-<form id="claimForm" onsubmit="event.preventDefault()">
+<h3 class="text-success mb-4 text-center">🌾 PMFBY Smart Claim Form</h3>
 
-  <input type="text" id="name" placeholder="Name" required><br><br>
-  <input type="text" id="mobile" placeholder="Mobile" required><br><br>
-  <input type="text" id="aadhaar" placeholder="Aadhaar" required><br><br>
+<form id="claimForm">
 
-  <input type="file" id="image"><br><br>
+<!-- Farmer -->
+<h5 class="text-primary">1️⃣ Farmer Details</h5>
+<input type="text" id="name" class="form-control mb-2" placeholder="Farmer Name" required>
+<input type="text" id="mobile" class="form-control mb-2" placeholder="Mobile Number" required>
+<input type="text" id="aadhaar" class="form-control mb-3" placeholder="Aadhaar Number" required>
 
-  <button type="button" onclick="checkImage()">Check Damage</button>
+<!-- Land -->
+<h5 class="text-primary">2️⃣ Land Details</h5>
+<input type="text" id="khasra" class="form-control mb-2" placeholder="Khasra Number" required>
+<input type="text" id="land_area" class="form-control mb-2" placeholder="Land Area" required>
+<input type="text" id="village" class="form-control mb-2" placeholder="Village" required>
+<input type="text" id="district" class="form-control mb-3" placeholder="District" required>
+
+<!-- Crop -->
+<h5 class="text-primary">3️⃣ Crop Details</h5>
+<input type="text" id="crop_name" class="form-control mb-2" placeholder="Crop Name" required>
+<input type="date" id="sowing_date" class="form-control mb-2" required>
+
+<select id="season" class="form-control mb-3" required>
+<option value="">Select Season</option>
+<option>Kharif</option>
+<option>Rabi</option>
+</select>
+
+<!-- Damage -->
+<h5 class="text-primary">4️⃣ Damage Detection (AI)</h5>
+<input type="file" id="image" class="form-control mb-2" required>
+
+<button type="button" class="btn btn-warning w-100 mb-2" onclick="checkAI()">
+Check Crop Damage
+</button>
+
+<p id="aiResult" class="fw-bold text-center"></p>
+
+<!-- Bank -->
+<h5 class="text-primary">5️⃣ Bank Details</h5>
+<input type="text" id="bank" class="form-control mb-2" placeholder="Bank Name" required>
+<input type="text" id="account" class="form-control mb-2" placeholder="Account Number" required>
+<input type="text" id="ifsc" class="form-control mb-3" placeholder="IFSC Code" required>
+
+<!-- Insurance -->
+<h5 class="text-primary">6️⃣ Insurance</h5>
+<input type="text" id="policy" class="form-control mb-2" placeholder="Policy Number" required>
+<input type="number" id="amount" class="form-control mb-3" placeholder="Sum Insured" required>
+
+<button type="submit" class="btn btn-success w-100">
+Submit Claim
+</button>
 
 </form>
 
-<p id="resultAI"></p>
+</div>
+</div>
 
 <script>
 
-function checkImage() {
+let isDamaged = false; // 🔥 important flag
 
-  const fileInput = document.getElementById("image");
-  const name = document.getElementById("name").value;
-  const mobile = document.getElementById("mobile").value;
-  const aadhaar = document.getElementById("aadhaar").value;
+// 🔥 AI CHECK
+async function checkAI() {
 
-  // ✅ Validation
-  if (!fileInput.files.length) {
-    alert("Select image first ❌");
-    return;
-  }
+    const file = document.getElementById("image").files[0];
 
-  if (!name || !mobile || !aadhaar) {
-    alert("Fill all details ❌");
-    return;
-  }
-
-  const formData = new FormData();
-  formData.append("image", fileInput.files[0]);
-
-  // 🔵 STEP 1: AI Check
-  fetch("http://127.0.0.1:5001/predict", {
-    method: "POST",
-    body: formData
-  })
-  .then(res => res.json())
-  .then(data => {
-
-    document.getElementById("resultAI").innerText = data.result;
-
-    // 🔥 अगर damaged है तभी save होगा
-    if (data.result.includes("Damaged")) {
-
-      fetch("http://localhost:5000/api/claim", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          name: name,
-          mobile: mobile,
-          aadhaar: aadhaar
-        })
-      })
-      .then(res => res.json())
-      .then(response => {
-        console.log(response);
-        alert("✅ Claim Submitted Successfully");
-      })
-      .catch(err => {
-        console.error(err);
-        alert("❌ Claim Failed");
-      });
-
-    } else {
-      alert("🌱 No damage detected → No claim needed");
+    if (!file) {
+        alert("Upload image first ❌");
+        return;
     }
 
-  })
-  .catch(err => {
-    console.error(err);
-    alert("❌ AI Error");
-  });
+    const formData = new FormData();
+    formData.append("file", file);
 
+    try {
+
+        const res = await fetch("https://crop-insurance-app.onrender.com/api/app/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await res.json();
+
+        console.log(data);
+
+        const result = (data.result || "").toLowerCase();
+
+        document.getElementById("aiResult").innerText = "AI Result: " + result;
+
+        if (result.includes("damage")) {
+            isDamaged = true;
+            alert("Crop Damaged ✅ You can claim");
+        } else {
+            isDamaged = false;
+            alert("Crop Healthy ❌ Claim not allowed");
+        }
+
+    } catch (err) {
+        console.log(err);
+        alert("AI Error ❌");
+    }
 }
+
+
+// 🔥 FORM SUBMIT
+document.getElementById("claimForm").addEventListener("submit", async function(e) {
+
+    e.preventDefault();
+
+    if (!isDamaged) {
+        alert("❌ Cannot submit claim. Crop is healthy.");
+        return;
+    }
+
+    const data = {
+        name: document.getElementById("name").value,
+        mobile: document.getElementById("mobile").value,
+        aadhaar: document.getElementById("aadhaar").value,
+        khasra: document.getElementById("khasra").value,
+        land_area: document.getElementById("land_area").value,
+        village: document.getElementById("village").value,
+        district: document.getElementById("district").value,
+        crop_name: document.getElementById("crop_name").value,
+        bank: document.getElementById("bank").value,
+        account: document.getElementById("account").value,
+        ifsc: document.getElementById("ifsc").value,
+        policy: document.getElementById("policy").value,
+        amount: document.getElementById("amount").value
+    };
+
+    try {
+
+        const res = await fetch("https://crop-insurance-app.onrender.com/api/claim", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+
+        console.log(result);
+
+        alert("✅ Claim Submitted Successfully");
+
+        window.location.href = "status.html";
+
+    } catch (err) {
+        console.log(err);
+        alert("❌ Submission Failed");
+    }
+
+});
 
 </script>
 
