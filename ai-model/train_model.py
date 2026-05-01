@@ -1,46 +1,36 @@
-import tensorflow as tf
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
+import os
+import numpy as np
+from PIL import Image
+from sklearn.ensemble import RandomForestClassifier
+import joblib
 
-# dataset path
-train_dir = "dataset"
+X = []
+y = []
 
-# image preprocessing
-datagen = ImageDataGenerator(rescale=1./255, validation_split=0.2)
+def load_images(folder, label):
+    for file in os.listdir(folder):
+        try:
+            path = os.path.join(folder, file)
 
-train = datagen.flow_from_directory(
-    train_dir,
-    target_size=(224,224),
-    batch_size=16,
-    class_mode="binary",
-    subset="training"
-)
+            img = Image.open(path).convert("RGB")   # ✅ force RGB
+            img = img.resize((64, 64))              # ✅ same size
+            img = np.array(img).flatten()           # ✅ same shape
 
-val = datagen.flow_from_directory(
-    train_dir,
-    target_size=(224,224),
-    batch_size=16,
-    class_mode="binary",
-    subset="validation"
-)
+            X.append(img)
+            y.append(label)
 
-# simple model
-model = tf.keras.models.Sequential([
-    tf.keras.layers.Conv2D(32,(3,3), activation='relu', input_shape=(224,224,3)),
-    tf.keras.layers.MaxPooling2D(),
+        except Exception as e:
+            print("Skipping:", file, e)
 
-    tf.keras.layers.Conv2D(64,(3,3), activation='relu'),
-    tf.keras.layers.MaxPooling2D(),
+load_images("dataset/healthy", 0)
+load_images("dataset/damaged", 1)
 
-    tf.keras.layers.Flatten(),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(1, activation='sigmoid')
-])
+X = np.array(X)
+y = np.array(y)
 
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+model = RandomForestClassifier()
+model.fit(X, y)
 
-model.fit(train, validation_data=val, epochs=5)
+joblib.dump(model, "model.pkl")
 
-# save model
-model.save("crop_model.h5")
-
-print("Model trained and saved 🚀")
+print("Model saved ✅")

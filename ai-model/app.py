@@ -1,13 +1,16 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask_cors import CORS   # ✅ FIX
 
 from PIL import Image
 import numpy as np
 import os
-import hashlib   # 👈 IMPORTANT
+import joblib   # ✅ model load
 
 app = Flask(__name__)
 CORS(app)
+
+# ✅ Load trained model
+model = joblib.load("model.pkl")
 
 # ✅ Route
 @app.route("/predict", methods=["GET", "POST"])
@@ -26,14 +29,15 @@ def predict():
     try:
         print("FILE RECEIVED:", file.filename)
 
-        # 👇 image read (optional, for future use)
+        # ✅ preprocess image
         img = Image.open(file.stream).convert("RGB")
+        img = img.resize((64, 64))
+        img = np.array(img).flatten().reshape(1, -1)
 
-        # ✅ STABLE LOGIC (NO AI, BUT SAME RESULT ALWAYS)
-        file_bytes = file.read()
-        hash_val = int(hashlib.md5(file_bytes).hexdigest(), 16)
+        # ✅ prediction
+        pred = model.predict(img)[0]
 
-        if hash_val % 2 == 0:
+        if pred == 0:
             result = "Healthy 🌱"
         else:
             result = "Damaged ⚠️"
