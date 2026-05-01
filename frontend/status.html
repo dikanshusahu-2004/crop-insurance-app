@@ -64,23 +64,20 @@ async function loadStatus() {
 
         console.log("DATA:", data);
 
-        let output = "";
+       let output = "";
 
-        data.forEach(item => {
-            output += `
-                <div style="border:1px solid #ccc; padding:10px; margin:10px;">
-                    <b>Name:</b> ${item.name} <br>
-                    <b>Mobile:</b> ${item.mobile} <br>
-                    <b>Status:</b> 
-                        Patwari: ${item.status.patwari} | 
-                        Insurance: ${item.status.insurance} | 
-                        Bank: ${item.status.bank}
-                </div>
-            `;
-        });
+data.forEach(item => {
+    output += `
+        <tr>
+            <td>${item.name}</td>
+            <td>${item.status.patwari}</td>
+            <td>${item.status.insurance}</td>
+            <td>${item.status.bank}</td>
+        </tr>
+    `;
+});
 
-        document.getElementById("result").innerHTML = output;
-
+document.getElementById("tableBody").innerHTML = output;
     } catch (err) {
         console.error(err);
         alert("Error loading data ❌");
