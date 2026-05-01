@@ -5,15 +5,13 @@ from PIL import Image
 import numpy as np
 import os
 
-from tensorflow.keras.applications.mobilenet_v2 import MobileNetV2, preprocess_input
 
 
 app = Flask(__name__)
 CORS(app)
 
 
-# ✅ Load model (once)
-model = MobileNetV2(weights="imagenet")
+
 
 
 # ✅ Preprocess function
@@ -45,7 +43,7 @@ def predict():
         img = Image.open(file.stream).convert("RGB")
         img = preprocess(img)
 
-        pred = model.predict(img)
+        
 
         # ⚠️ अभी demo logic (real AI नहीं)
         import random
