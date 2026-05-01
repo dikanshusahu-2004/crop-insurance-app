@@ -78,58 +78,9 @@ Submit Claim
 </div>
 
 <script>
-
-
-// 🔥 AI CHECK
-async function checkAI() {
-
-    const file = document.getElementById("image").files[0];
-
-    if (!file) {
-        alert("Upload image first ❌");
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-
-        const res = await // ✅ NEW (सही)
-fetch("https://crop-insurance-app.onrender.com/api/app/create", {
-            method: "POST",
-            body: formData
-        });
-
-        const data = await res.json();
-
-        console.log(data);
-
-        const result = (data.result || "").toLowerCase();
-
-        document.getElementById("aiResult").innerText = "AI Result: " + result;
-
-        if (result.includes("damage")) {
-            isDamaged = true;
-            alert("Crop Damaged ✅ You can claim");
-        } else {
-            isDamaged = false;
-            alert("Crop Healthy ❌ Claim not allowed");
-        }
-
-    } catch (err) {
-        console.log(err);
-        alert("AI Error ❌");
-    }
-}
-
-
-// 🔥 FORM SUBMIT
 document.getElementById("claimForm").addEventListener("submit", async function(e) {
 
     e.preventDefault();
-
-    
 
     const formData = new FormData();
 
@@ -153,7 +104,14 @@ document.getElementById("claimForm").addEventListener("submit", async function(e
     formData.append("policy_number", document.getElementById("policy").value);
     formData.append("sum_insured", document.getElementById("amount").value);
 
-    formData.append("damage_image", document.getElementById("image").files[0]);
+    const file = document.getElementById("image").files[0];
+
+    if (!file) {
+        alert("Upload image ❌");
+        return;
+    }
+
+    formData.append("damage_image", file);
 
     try {
 
@@ -162,21 +120,20 @@ document.getElementById("claimForm").addEventListener("submit", async function(e
             body: formData
         });
 
-        const result = await res.json();
+        const data = await res.json();
 
-        console.log(result);
+        console.log("RESPONSE:", data);
 
         alert("✅ Claim Submitted Successfully");
 
         window.location.href = "status.html";
 
     } catch (err) {
-        console.log(err);
+        console.error(err);
         alert("❌ Submission Failed");
     }
 
 });
-
 </script>
 
 </body>

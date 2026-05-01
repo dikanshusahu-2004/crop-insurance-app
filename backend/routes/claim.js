@@ -2,13 +2,14 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 
-const Claim = require("../models/Application"); // check path सही हो
+const Claim = require("../models/Application");
 
-// 🔥 multer setup
+// multer
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-// ✅ GET all claims
+
+// ✅ GET
 router.get("/", async (req, res) => {
   try {
     const data = await Claim.find();
@@ -18,13 +19,16 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ✅ SAVE FULL CLAIM (IMAGE + ALL DATA)
-router.post("/", upload.single("damage_image"), async (req, res) => {
+
+// ✅ SAVE (IMPORTANT FIX)
+router.post("/create", upload.single("damage_image"), async (req, res) => {
   try {
+
     console.log("BODY:", req.body);
     console.log("FILE:", req.file);
 
     const newClaim = new Claim({
+
       name: req.body.name,
       mobile: req.body.mobile,
       aadhaar: req.body.aadhaar,
@@ -37,9 +41,6 @@ router.post("/", upload.single("damage_image"), async (req, res) => {
       crop_name: req.body.crop_name,
       sowing_date: req.body.sowing_date,
       season: req.body.season,
-
-      damage_type: req.body.damage_type,
-      incident_date: req.body.incident_date,
 
       image: req.file ? req.file.originalname : "",
 
@@ -55,11 +56,12 @@ router.post("/", upload.single("damage_image"), async (req, res) => {
         insurance: "Pending",
         bank: "Pending"
       }
+
     });
 
     await newClaim.save();
 
-    res.json({ message: "Claim saved successfully ✅" });
+    res.json({ success: true, message: "Saved ✅" });
 
   } catch (err) {
     console.error("ERROR:", err);
@@ -67,43 +69,21 @@ router.post("/", upload.single("damage_image"), async (req, res) => {
   }
 });
 
-// ✅ PATWARI APPROVE
+
+// ✅ APPROVAL ROUTES (same)
 router.put("/patwari/:id", async (req, res) => {
-  try {
-    await Claim.findByIdAndUpdate(req.params.id, {
-      "status.patwari": "Approved"
-    });
-
-    res.json({ message: "Patwari Approved ✅" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  await Claim.findByIdAndUpdate(req.params.id, { "status.patwari": "Approved" });
+  res.json({ message: "Patwari Approved ✅" });
 });
 
-// ✅ INSURANCE APPROVE
 router.put("/insurance/:id", async (req, res) => {
-  try {
-    await Claim.findByIdAndUpdate(req.params.id, {
-      "status.insurance": "Approved"
-    });
-
-    res.json({ message: "Insurance Approved ✅" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  await Claim.findByIdAndUpdate(req.params.id, { "status.insurance": "Approved" });
+  res.json({ message: "Insurance Approved ✅" });
 });
 
-// ✅ BANK APPROVE
 router.put("/bank/:id", async (req, res) => {
-  try {
-    await Claim.findByIdAndUpdate(req.params.id, {
-      "status.bank": "Approved"
-    });
-
-    res.json({ message: "Bank Approved ✅" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  await Claim.findByIdAndUpdate(req.params.id, { "status.bank": "Approved" });
+  res.json({ message: "Bank Approved ✅" });
 });
 
 module.exports = router;
