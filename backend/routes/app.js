@@ -4,6 +4,7 @@ const multer = require("multer");
 
 const Application = require("../models/Application");
 
+
 // ===== MULTER =====
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -16,6 +17,7 @@ router.post("/create", async (req, res) => {
     await newApp.save();
 
     res.json({ success: true, message: "Application Saved ✅" });
+
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Server Error" });
@@ -28,6 +30,7 @@ router.get("/all", async (req, res) => {
   try {
     const data = await Application.find();
     res.json(data);
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -44,7 +47,6 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 
     console.log("File received:", req.file.originalname);
 
-    // dummy AI result
     const result = Math.random() > 0.5 ? "damaged" : "healthy";
 
     res.json({
@@ -58,4 +60,6 @@ router.post("/upload", upload.single("file"), async (req, res) => {
   }
 });
 
+
+// ===== EXPORT =====
 module.exports = router;
