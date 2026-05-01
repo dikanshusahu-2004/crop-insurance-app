@@ -69,7 +69,7 @@ async function loadStatus() {
 data.forEach(item => {
     output += `
         <tr>
-            <td>${item.name}</td>
+           <td>${item.name || "No Name"}</td>
             <td>${item.status.patwari}</td>
             <td>${item.status.insurance}</td>
             <td>${item.status.bank}</td>

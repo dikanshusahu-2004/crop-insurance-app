@@ -30,7 +30,7 @@ h5 {
 
 <!-- Farmer -->
 <h5 class="text-primary">1️⃣ Farmer Details</h5>
-<input type="text" id="name" class="form-control mb-2" placeholder="Farmer Name" required>
+<input type="text" id="name" class="form-control mb-1" placeholder="Farmer Name" required>
 <input type="text" id="mobile" class="form-control mb-2" placeholder="Mobile Number" required>
 <input type="text" id="aadhaar" class="form-control mb-3" placeholder="Aadhaar Number" required>
 
@@ -84,7 +84,7 @@ document.getElementById("claimForm").addEventListener("submit", async function(e
 
     const formData = new FormData();
 
-    formData.append("name", name.value);
+    formData.append("name", document.getElementById("name").value);
     formData.append("mobile", mobile.value);
     formData.append("aadhaar", aadhaar.value);
 
