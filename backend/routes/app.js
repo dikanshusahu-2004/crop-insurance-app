@@ -4,13 +4,12 @@ const multer = require("multer");
 
 const Application = require("../models/Application");
 
-
 // ===== MULTER =====
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 
-// ===== CREATE =====
+// ===== CREATE API =====
 router.post("/create", async (req, res) => {
   try {
     const newApp = new Application(req.body);
@@ -45,6 +44,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
 
     console.log("File received:", req.file.originalname);
 
+    // dummy AI result
     const result = Math.random() > 0.5 ? "damaged" : "healthy";
 
     res.json({
@@ -57,6 +57,5 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     res.status(500).json({ message: "Upload failed ❌" });
   }
 });
-
 
 module.exports = router;
