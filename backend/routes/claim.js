@@ -21,55 +21,53 @@ router.get("/", async (req, res) => {
 
 
 // ✅ SAVE (IMPORTANT FIX)
-router.post("/create", upload.single("damage_image"), async (req, res) => {
-  try {
+router.post("/", upload.single("damage_image"), async (req, res) => {
 
-    console.log("BODY:", req.body);
-    console.log("FILE:", req.file);
+    console.log("REQ BODY:", req.body);
+    console.log("REQ FILE:", req.file);
 
-    const newClaim = new Claim({
+    try {
 
-      name: req.body.name,
-      mobile: req.body.mobile,
-      aadhaar: req.body.aadhaar,
+        const newClaim = new Claim({
+            name: req.body.name || "",
+            mobile: req.body.mobile || "",
+            aadhaar: req.body.aadhaar || "",
 
-      khasra: req.body.khasra,
-      land_area: req.body.land_area,
-      village: req.body.village,
-      district: req.body.district,
+            khasra: req.body.khasra || "",
+            land_area: req.body.land_area || "",
+            village: req.body.village || "",
+            district: req.body.district || "",
 
-      crop_name: req.body.crop_name,
-      sowing_date: req.body.sowing_date,
-      season: req.body.season,
+            crop_name: req.body.crop_name || "",
+            sowing_date: req.body.sowing_date || "",
+            season: req.body.season || "",
 
-      image: req.file ? req.file.originalname : "",
+            image: req.file ? req.file.originalname : "",
 
-      bank_name: req.body.bank_name,
-      account_number: req.body.account_number,
-      ifsc_code: req.body.ifsc_code,
+            bank_name: req.body.bank_name || "",
+            account_number: req.body.account_number || "",
+            ifsc_code: req.body.ifsc_code || "",
 
-      policy_number: req.body.policy_number,
-      sum_insured: req.body.sum_insured,
+            policy_number: req.body.policy_number || "",
+            sum_insured: req.body.sum_insured || "",
 
-      status: {
-        patwari: "Pending",
-        insurance: "Pending",
-        bank: "Pending"
-      }
+            status: {
+                patwari: "Pending",
+                insurance: "Pending",
+                bank: "Pending"
+            }
+        });
 
-    });
+        await newClaim.save();
 
-    await newClaim.save();
+        res.json({ message: "Claim saved successfully ✅" });
 
-    res.json({ success: true, message: "Saved ✅" });
+    } catch (err) {
+        console.error("ERROR:", err);
+        res.status(500).json({ error: err.message });
+    }
 
-  } catch (err) {
-    console.error("ERROR:", err);
-    res.status(500).json({ error: err.message });
-  }
 });
-
-
 // ✅ APPROVAL ROUTES (same)
 router.put("/patwari/:id", async (req, res) => {
   await Claim.findByIdAndUpdate(req.params.id, { "status.patwari": "Approved" });
