@@ -41,8 +41,8 @@ router.post("/upload", upload.single("file"), async (req, res) => {
   try {
 
     if (!req.file) {
-      return res.status(400).json({ message: "No file uploaded ❌" });
-    }
+  return res.status(400).json({ message: "No file uploaded ❌" });
+}
 
     const result = Math.random() > 0.5 ? "damaged" : "healthy";
 
