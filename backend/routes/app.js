@@ -38,7 +38,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
   formData,
   {
     headers: formData.getHeaders(),
-    timeout: 10000
+    timeout: 30000
   }
 );
 
@@ -50,7 +50,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
     });
 
   } catch (err) {
-    console.error("AI ERROR:", err.message);
+   console.error("AI ERROR FULL:", err.response?.data || err.message);
     res.status(500).json({ message: "AI Failed ❌" });
   }
 });
