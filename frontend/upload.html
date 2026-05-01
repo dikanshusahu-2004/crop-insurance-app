@@ -91,23 +91,6 @@
 </div>
 
 <script>
-
-function previewImage(event) {
-    const file = event.target.files[0];
-
-    if (file) {
-        document.getElementById("fileName").innerText = file.name;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = document.getElementById("preview");
-            img.src = e.target.result;
-            img.style.display = "block";
-        };
-        reader.readAsDataURL(file);
-    }
-}
-
 async function uploadImage() {
 
     const file = document.getElementById("file").files[0];
@@ -131,10 +114,13 @@ async function uploadImage() {
 
         console.log("FULL RESPONSE:", data);
 
-        document.getElementById("result").innerText = "Result: " + data.result;
+        // ✅ SAFE RESULT EXTRACTION
+        const result = (data.result || "").toString().toLowerCase();
 
-        // ✅ DAMAGE CHECK
-        if (data.result && data.result.toLowerCase() === "damaged") {
+        document.getElementById("result").innerText = "Result: " + result;
+
+        // ✅ FIXED LOGIC
+        if (result.includes("damage")) {
             alert("Crop Damaged ⚠️ Redirecting to Claim...");
             window.location.href = "claim.html";
         } else {
@@ -146,7 +132,6 @@ async function uploadImage() {
         alert("Upload failed ❌");
     }
 }
-
 </script>
 
 </body>
