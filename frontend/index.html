@@ -1,13 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>PMFBY Crop Insurance</title>
-    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+            padding: 50px 20px;
+        }
+
+        h1 {
+            font-size: 40px;
+        }
+
+        h2 {
+            font-weight: normal;
+            margin-bottom: 30px;
+        }
+
+        .steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 30px 0;
+        }
+
+        .step {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            width: 180px;
+        }
+
+        .arrow {
+            font-size: 20px;
+        }
+
+        button {
+            padding: 12px 25px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            background: white;
+            color: #0072ff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #ddd;
+        }
+    </style>
 </head>
+
 <body>
 
 <div class="container">
+
     <h1>🌾 AI-Based Crop Insurance System</h1>
     <h2>(PMFBY - Pradhan Mantri Fasal Bima Yojana)</h2>
 
@@ -43,10 +103,21 @@
 
     </div>
 
-    <button onclick="goToLogin()">🚀 Farmer Login</button>
+    <!-- Buttons -->
+    <button onclick="goToLogin()">🚀 Login</button>
+    <button onclick="goToRegister()">📝 Register</button>
+
 </div>
 
-<script src="script.js"></script>
+<script>
+function goToLogin() {
+    window.location = "login.html";
+}
+
+function goToRegister() {
+    window.location = "register.html";
+}
+</script>
 
 </body>
 </html>
