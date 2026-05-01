@@ -97,8 +97,10 @@ router.put("/patwari/:id", upload.single("verify_image"), async (req, res) => {
 });
 
 router.put("/insurance/:id", async (req, res) => {
-  await Claim.findByIdAndUpdate(req.params.id, { "status.insurance": "Approved" });
-  res.json({ message: "Insurance Approved ✅" });
+  await Claim.findByIdAndUpdate(req.params.id, {
+    "status.insurance": "Approved"
+  });
+  res.json({ message: "Insurance Approved" });
 });
 
 router.put("/bank/:id", async (req, res) => {

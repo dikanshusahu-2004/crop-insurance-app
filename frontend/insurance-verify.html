@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Insurance Verification</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body { background:#f5f7fa; }
+.card { border-radius:12px; }
+img { border-radius:10px; margin-top:10px; }
+</style>
+
+</head>
+
+<body>
+
+<div class="container mt-4">
+<div class="card shadow p-4">
+
+<h3 class="text-primary mb-3">🏢 Insurance Verification</h3>
+
+<!-- Farmer Details -->
+<h5 class="text-success">Farmer Details</h5>
+<p><b>Name:</b> <span id="name"></span></p>
+<p><b>Mobile:</b> <span id="mobile"></span></p>
+<p><b>Village:</b> <span id="village"></span></p>
+<p><b>Crop:</b> <span id="crop"></span></p>
+
+<hr>
+
+<!-- Farmer Image -->
+<h5 class="text-danger">Farmer Image</h5>
+<img id="farmerImage" width="250">
+
+<hr>
+
+<!-- Patwari Image -->
+<h5 class="text-primary">Patwari Verification Image</h5>
+<img id="patwariImage" width="250">
+
+<p><b>Latitude:</b> <span id="lat"></span></p>
+<p><b>Longitude:</b> <span id="lon"></span></p>
+
+<hr>
+
+<!-- Insurance Action -->
+<button onclick="approve()" class="btn btn-success w-100 mt-2">
+Approve Claim
+</button>
+
+<button onclick="reject()" class="btn btn-danger w-100 mt-2">
+Reject Claim
+</button>
+
+<a href="insurance-dashboard.html" class="btn btn-secondary w-100 mt-2">
+Back
+</a>
+
+</div>
+</div>
+
+<script>
+
+const id = localStorage.getItem("claimId");
+
+async function loadDetails(){
+
+  const res = await fetch("https://crop-insurance-app.onrender.com/api/claim");
+  const data = await res.json();
+
+  const item = data.find(x => x._id === id);
+
+  document.getElementById("name").innerText = item.name;
+  document.getElementById("mobile").innerText = item.mobile;
+  document.getElementById("village").innerText = item.village;
+  document.getElementById("crop").innerText = item.crop_name;
+
+  document.getElementById("farmerImage").src =
+    "https://crop-insurance-app.onrender.com/uploads/" + item.image;
+
+  document.getElementById("patwariImage").src =
+    "https://crop-insurance-app.onrender.com/uploads/" + item.verify_image;
+
+  document.getElementById("lat").innerText = item.lat || "N/A";
+  document.getElementById("lon").innerText = item.lon || "N/A";
+}
+
+// ✅ APPROVE
+async function approve(){
+
+  await fetch(
+    `https://crop-insurance-app.onrender.com/api/claim/insurance/${id}`,
+    { method: "PUT" }
+  );
+
+  alert("Insurance Approved ✅");
+  window.location.href = "insurance-dashboard.html";
+}
+
+// ❌ REJECT
+async function reject(){
+
+  alert("Claim Rejected ❌ (logic add karna ho to batao)");
+  window.location.href = "insurance-dashboard.html";
+}
+
+loadDetails();
+
+</script>
+
+</body>
+</html>
