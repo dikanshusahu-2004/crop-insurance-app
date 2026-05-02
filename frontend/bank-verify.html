@@ -70,6 +70,11 @@ async function loadDetails(){
 
   const item = data.find(x => x._id === id);
 
+  if (!item) {
+    alert("Data not found ❌");
+    return;
+  }
+
   console.log("Farmer:", item.image);
   console.log("Patwari:", item.verify_image);
 
@@ -81,28 +86,31 @@ async function loadDetails(){
 
   const baseURL = "https://crop-insurance-app.onrender.com";
 
-// Farmer Image
-if (item.image) {
-  document.getElementById("farmerImage").src =
-    baseURL + "/uploads/" + item.image;
-}
+  // Farmer Image
+  if (item.image) {
+    document.getElementById("farmerImage").src =
+      baseURL + "/uploads/" + item.image;
+  }
 
-// Patwari Image
-if (item.verify_image) {
+  // Patwari Image
+  if (item.verify_image) {
     document.getElementById("patwariImage").src =
-    baseURL + "/uploads/" + item.verify_image;
+      baseURL + "/uploads/" + item.verify_image;
+  }
+
+  // GPS
+  document.getElementById("lat").innerText = item.lat || "N/A";
+  document.getElementById("lon").innerText = item.lon || "N/A";
 }
 
-// GPS ALWAYS SHOW
-document.getElementById("lat").innerText = item.lat || "N/A";
-document.getElementById("lon").innerText = item.lon || "N/A";
 
+// ✅ OUTSIDE FUNCTION
 async function approve(){
 
   await fetch(
-  `https://crop-insurance-app.onrender.com/api/claim/bank/${id}`,
-  { method: "PUT" }
-);
+    `https://crop-insurance-app.onrender.com/api/claim/bank/${id}`,
+    { method: "PUT" }
+  );
 
   alert("Payment Approved 💰");
   window.location.href = "bank-dashboard.html";
