@@ -89,21 +89,25 @@ router.post("/", upload.single("damage_image"), async (req, res) => {
 router.put("/patwari/:id", upload.single("verify_image"), async (req, res) => {
   try {
 
-    console.log("FILE:", req.file);
+    console.log("FILE:", req.file); // DEBUG
+
     const updated = await Claim.findByIdAndUpdate(
-  req.params.id,
-  {
-    "status.patwari": "Approved",
+      req.params.id,
+      {
+        "status.patwari": "Approved",
 
-    verify_image: req.file ? req.file.filename : undefined,
+        verify_image: req.file ? req.file.filename : "",
 
-    lat: req.body.lat || "",
-    lon: req.body.lon || "",
+        notes: req.body.notes || "",
+        yield: req.body.yield || "",
 
-    verify_time: new Date()
-  },
-  { new: true }
-);
+        lat: req.body.lat || "",
+        lon: req.body.lon || "",
+
+        verify_time: new Date()
+      },
+      { new: true }
+    );
 
     res.json({ message: "Patwari Verified ✅", data: updated });
 

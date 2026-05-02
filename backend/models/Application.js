@@ -23,6 +23,11 @@ const claimSchema = new mongoose.Schema({
   incident_date: String,
   image: String,
 
+
+  verify_image: String,
+notes: String,
+yield: String,
+
   // Bank
   bank_name: String,
   account_number: String,
@@ -38,6 +43,8 @@ const claimSchema = new mongoose.Schema({
     insurance: { type: String, default: "Pending" },
     bank: { type: String, default: "Pending" }
   }
+
+  
 
 });
 

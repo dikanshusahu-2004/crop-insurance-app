@@ -32,6 +32,7 @@ app.use("/api/claim", require("./routes/claim"));
 app.use("/api/auth", require("./routes/auth"));
 
 
+
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ✅ frontend serve
