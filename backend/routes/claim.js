@@ -11,9 +11,10 @@ const storage = multer.diskStorage({
  destination: function (req, file, cb) {
   cb(null, "uploads/");
 } ,
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  }
+filename: function (req, file, cb) {
+  const name = Date.now() + "-" + file.originalname.replace(/\s/g, "");
+  cb(null, name);
+}
 });
 
 const upload = multer({ storage: storage });
@@ -93,7 +94,7 @@ router.put("/patwari/:id", upload.single("verify_image"), async (req, res) => {
   {
     "status.patwari": "Approved",
 
-    verify_image: req.file ? req.file.originalname : "",
+    verify_image: req.file ? req.file.filename : "",
 
     lat: req.body.lat || "",
     lon: req.body.lon || "",
