@@ -5,8 +5,18 @@ const multer = require("multer");
 const Claim = require("../models/Application");
 
 // multer
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
+
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  }
+});
+
+const upload = multer({ storage: storage });
 
 
 // ✅ GET
@@ -44,7 +54,7 @@ router.post("/", upload.single("damage_image"), async (req, res) => {
             
             lat: req.body.lat || "",
             lon: req.body.lon || "",
-            image: req.file ? req.file.originalname : "",
+           image: req.file ? req.file.filename : "",
 
             bank_name: req.body.bank_name || "",
             account_number: req.body.account_number || "",
