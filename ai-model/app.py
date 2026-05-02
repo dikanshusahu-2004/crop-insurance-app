@@ -9,25 +9,33 @@ def check_damage(file):
     image = image.resize((224, 224))
     img = np.array(image)
 
-    # 🔥 ONLY LOWER AREA (crop focus)
+    # 🔥 focus only bottom (crop area)
     img = img[120:224, :, :]
 
-    R = img[:, :, 0]
-    G = img[:, :, 1]
-    B = img[:, :, 2]
+    # convert to HSV
+    import cv2
+    hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
 
-    green_mask = (G > R) & (G > B) & (G > 100)
-    brown_mask = (R > 100) & (G < 130) & (B < 100)
+    # GREEN RANGE
+    green_lower = np.array([35, 40, 40])
+    green_upper = np.array([85, 255, 255])
 
-    green_ratio = np.sum(green_mask) / img.size
-    brown_ratio = np.sum(brown_mask) / img.size
+    # BROWN / DRY RANGE
+    brown_lower = np.array([10, 50, 50])
+    brown_upper = np.array([30, 255, 200])
+
+    green_mask = cv2.inRange(hsv, green_lower, green_upper)
+    brown_mask = cv2.inRange(hsv, brown_lower, brown_upper)
+
+    green_ratio = np.sum(green_mask > 0) / green_mask.size
+    brown_ratio = np.sum(brown_mask > 0) / brown_mask.size
 
     print("Green:", green_ratio, "Brown:", brown_ratio)
 
-    # 🔥 UPDATED LOGIC (important)
-    if brown_ratio > 0.12:
+    # 🔥 FINAL DECISION
+    if brown_ratio > 0.20:
         return "Damaged"
-    elif green_ratio > 0.3:
+    elif green_ratio > 0.25:
         return "Healthy"
     else:
         return "Partially Damaged"
