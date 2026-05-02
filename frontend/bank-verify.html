@@ -70,6 +70,9 @@ async function loadDetails(){
 
   const item = data.find(x => x._id === id);
 
+  console.log("Farmer:", item.image);
+  console.log("Patwari:", item.verify_image);
+
   document.getElementById("name").innerText = item.name;
   document.getElementById("mobile").innerText = item.mobile;
   document.getElementById("account").innerText = item.account_number;
@@ -97,9 +100,9 @@ document.getElementById("lon").innerText = item.lon || "N/A";
 async function approve(){
 
   await fetch(
-    `https://crop-insurance-app.onrender.com/api/claim/bank/${id}`,
-    { method: "PUT" }
-  );
+  `https://crop-insurance-app.onrender.com/api/claim/bank/${id}`,
+  { method: "PUT" }
+);
 
   alert("Payment Approved 💰");
   window.location.href = "bank-dashboard.html";
