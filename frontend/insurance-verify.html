@@ -71,6 +71,7 @@ async function loadDetails(){
   const data = await res.json();
 
   const item = data.find(x => x._id === id);
+  console.log(item);
 
   document.getElementById("name").innerText = item.name;
   document.getElementById("mobile").innerText = item.mobile;
