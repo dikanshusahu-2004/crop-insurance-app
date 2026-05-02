@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-
+const path = require("path");
 const Claim = require("../models/Application");
 
 // multer
@@ -9,7 +9,7 @@ const Claim = require("../models/Application");
 
 const storage = multer.diskStorage({
  destination: function (req, file, cb) {
-  cb(null, path.join(__dirname, "../uploads"));
+  cb(null, "uploads/");
 } ,
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
