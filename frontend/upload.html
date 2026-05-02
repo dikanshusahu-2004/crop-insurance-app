@@ -128,40 +128,33 @@ async function uploadImage() {
     }
 
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append("image", file); // 🔥 FIX
 
     try {
 
-        const res = await fetch("https://crop-insurance-app.onrender.com/api/app/upload", {
+        const res = await fetch("https://crop-ai-api-vqcm.onrender.com/predict", {
             method: "POST",
             body: formData
         });
 
         const data = await res.json();
 
-        console.log("FULL RESPONSE:", data);
+        console.log("AI RESPONSE:", data);
 
-        const result = (data.result || "").toString().toLowerCase();
+        const result = (data.prediction || "").toLowerCase();
 
         document.getElementById("result").innerText = "Result: " + result;
 
-        // 🔥 FIXED CONDITION (important)
         if (result.includes("damage")) {
-
             alert("Crop Damaged ⚠️ Redirecting to Claim...");
             window.location.href = "claim.html";
-
         } else {
-
             alert("Crop Healthy ✅");
-
         }
 
     } catch (err) {
-
         console.error("ERROR:", err);
         alert("Upload failed ❌");
-
     }
 }
 
