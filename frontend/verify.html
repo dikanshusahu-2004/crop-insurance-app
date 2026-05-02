@@ -40,7 +40,6 @@
     <div>
          <h5 class="text-warning">Land Details</h5>
          <p><b>Land Area:</b> <span id="land"></span></p>
-         <p><b>Location:</b> <span id="location"></span></p>
 
         <h5 class="text-info">Bank Details</h5>
         <p><b>Bank:</b> <span id="bank"></span></p>
@@ -121,7 +120,7 @@ async function loadDetails(){
     document.getElementById("season").innerText = item.season;
      
     document.getElementById("land").innerText = item.land_area;
-    document.getElementById("location").innerText = item.land_location;
+  
 
     document.getElementById("bank").innerText = item.bank_name;
     document.getElementById("account").innerText = item.account_number;

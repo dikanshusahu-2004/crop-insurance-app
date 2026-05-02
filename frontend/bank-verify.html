@@ -28,7 +28,7 @@ img{border-radius:10px;margin-top:10px;}
 
 <h5 class="text-warning">Land Details</h5>
 <p><b>Land Area:</b> <span id="land"></span></p>
-<p><b>Location:</b> <span id="location"></span></p>
+
 
 <h5 class="text-info">Bank Details</h5>
 <p><b>Bank:</b> <span id="bank"></span></p>
@@ -53,9 +53,7 @@ img{border-radius:10px;margin-top:10px;}
 
 <hr>
 
-<h5>GPS</h5>
-<p>Lat: <span id="lat"></span></p>
-<p>Lon: <span id="lon"></span></p>
+
 
 <hr>
 
@@ -96,7 +94,7 @@ async function loadDetails(){
   document.getElementById("crop").innerText = item.crop_name;
 
    document.getElementById("land").innerText = item.land_area;
-    document.getElementById("location").innerText = item.land_location;
+    
 
     document.getElementById("bank").innerText = item.bank_name;
    
@@ -118,9 +116,7 @@ async function loadDetails(){
       baseURL + "/uploads/" + item.verify_image;
   }
 
-  // GPS
-  document.getElementById("lat").innerText = item.lat || "N/A";
-  document.getElementById("lon").innerText = item.lon || "N/A";
+  
 }
 
 

@@ -30,7 +30,6 @@ img { border-radius:10px; margin-top:10px; }
 
 <h5 class="text-warning">Land Details</h5>
 <p><b>Land Area:</b> <span id="land"></span></p>
-<p><b>Location:</b> <span id="location"></span></p>
 
 <h5 class="text-info">Bank Details</h5>
 <p><b>Bank:</b> <span id="bank"></span></p>
@@ -53,8 +52,7 @@ img { border-radius:10px; margin-top:10px; }
 <h5 class="text-primary">Patwari Verification Image</h5>
 <img id="patwariImage" width="250">
 
-<p><b>Latitude:</b> <span id="lat"></span></p>
-<p><b>Longitude:</b> <span id="lon"></span></p>
+
 
 <hr>
 
@@ -98,7 +96,7 @@ if(!item){
   document.getElementById("crop").innerText = item.crop_name;
 
    document.getElementById("land").innerText = item.land_area;
-    document.getElementById("location").innerText = item.land_location;
+    
 
     document.getElementById("bank").innerText = item.bank_name;
     document.getElementById("account").innerText = item.account_number;
@@ -118,8 +116,7 @@ if(!item){
 }else{
   document.getElementById("patwariImage").src = "";
 }
-  document.getElementById("lat").innerText = item.lat || "N/A";
-  document.getElementById("lon").innerText = item.lon || "N/A";
+ 
 }
 
 // ✅ APPROVE
