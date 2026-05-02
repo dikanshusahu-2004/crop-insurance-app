@@ -76,15 +76,23 @@ async function loadDetails(){
   document.getElementById("ifsc").innerText = item.ifsc_code;
   document.getElementById("crop").innerText = item.crop_name;
 
+  const baseURL = "https://crop-insurance-app.onrender.com";
+
+// Farmer Image
+if (item.image) {
   document.getElementById("farmerImage").src =
-    "https://crop-insurance-app.onrender.com/uploads/" + item.image;
-
-  document.getElementById("patwariImage").src =
-    "https://crop-insurance-app.onrender.com/uploads/" + item.verify_image;
-
-  document.getElementById("lat").innerText = item.lat || "N/A";
-  document.getElementById("lon").innerText = item.lon || "N/A";
+    baseURL + "/uploads/" + item.image;
 }
+
+// Patwari Image
+if (item.verify_image) {
+    document.getElementById("patwariImage").src =
+    baseURL + "/uploads/" + item.verify_image;
+}
+
+// GPS ALWAYS SHOW
+document.getElementById("lat").innerText = item.lat || "N/A";
+document.getElementById("lon").innerText = item.lon || "N/A";
 
 async function approve(){
 
