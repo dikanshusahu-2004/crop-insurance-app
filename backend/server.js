@@ -30,7 +30,7 @@ mongoose.connect(process.env.MONGO_URI)
 app.use("/api/app", require("./routes/app"));
 app.use("/api/claim", require("./routes/claim"));
 app.use("/api/auth", require("./routes/auth"));
-const path = require("path");
+
 
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
