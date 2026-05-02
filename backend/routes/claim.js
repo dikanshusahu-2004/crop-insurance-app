@@ -89,6 +89,7 @@ router.post("/", upload.single("damage_image"), async (req, res) => {
 router.put("/patwari/:id", upload.single("verify_image"), async (req, res) => {
   try {
 
+    console.log("FILE:", req.file);
     const updated = await Claim.findByIdAndUpdate(
   req.params.id,
   {
