@@ -94,7 +94,7 @@ router.put("/patwari/:id", upload.single("verify_image"), async (req, res) => {
   {
     "status.patwari": "Approved",
 
-    verify_image: req.file ? req.file.filename : "",
+    verify_image: req.file ? req.file.filename : undefined,
 
     lat: req.body.lat || "",
     lon: req.body.lon || "",

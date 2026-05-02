@@ -93,6 +93,10 @@ async function loadDetails(){
     const data = await res.json();
 
     const item = data.find(x => x._id === id);
+    if (!item) {
+  alert("Data not found ❌");
+  return;
+}
 
     document.getElementById("name").innerText = item.name;
     document.getElementById("mobile").innerText = item.mobile;
@@ -102,8 +106,11 @@ async function loadDetails(){
     document.getElementById("crop").innerText = item.crop_name;
     document.getElementById("season").innerText = item.season;
      
-    document.getElementById("farmerImage").src =
-    "https://crop-insurance-app.onrender.com/uploads/" + item.image;
+    const baseURL = "https://crop-insurance-app.onrender.com";
+
+document.getElementById("farmerImage").src =
+baseURL + "/uploads/" + item.image;
+    console.log("Farmer Image:", item.image);
 }
 
 // 🔥 IMAGE PREVIEW
@@ -138,6 +145,7 @@ async function approve() {
     });
 
     alert("Patwari Verified ✅");
+window.location.href = "patwari-dashboard.html";
 
   });
 

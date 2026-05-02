@@ -71,6 +71,11 @@ async function loadDetails(){
   const data = await res.json();
 
   const item = data.find(x => x._id === id);
+
+if(!item){
+  alert("Data not found ❌");
+  return;
+}
   console.log(item);
 
   document.getElementById("name").innerText = item.name;
@@ -81,9 +86,12 @@ async function loadDetails(){
   document.getElementById("farmerImage").src =
     "https://crop-insurance-app.onrender.com/uploads/" + item.image;
 
+  if(item.verify_image){
   document.getElementById("patwariImage").src =
     "https://crop-insurance-app.onrender.com/uploads/" + item.verify_image;
-
+}else{
+  document.getElementById("patwariImage").src = "";
+}
   document.getElementById("lat").innerText = item.lat || "N/A";
   document.getElementById("lon").innerText = item.lon || "N/A";
 }
