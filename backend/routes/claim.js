@@ -8,13 +8,13 @@ const Claim = require("../models/Application");
 
 
 const storage = multer.diskStorage({
- destination: function (req, file, cb) {
- cb(null, path.join(__dirname, "../uploads"));
-} ,
-filename: function (req, file, cb) {
-  const name = Date.now() + "-" + file.originalname.replace(/\s/g, "");
-  cb(null, name);
-}
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "../uploads")); // ✅ FIXED
+  },
+  filename: function (req, file, cb) {
+    const name = Date.now() + "-" + file.originalname.replace(/\s/g, "");
+    cb(null, name);
+  }
 });
 
 const upload = multer({ storage: storage });
