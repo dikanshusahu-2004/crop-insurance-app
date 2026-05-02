@@ -76,15 +76,17 @@ if(!item){
   alert("Data not found ❌");
   return;
 }
-  console.log(item);
+ console.log("Patwari Image:", item.verify_image);
 
   document.getElementById("name").innerText = item.name;
   document.getElementById("mobile").innerText = item.mobile;
   document.getElementById("village").innerText = item.village;
   document.getElementById("crop").innerText = item.crop_name;
 
+  if(item.image){
   document.getElementById("farmerImage").src =
     "https://crop-insurance-app.onrender.com/uploads/" + item.image;
+}
 
   if(item.verify_image){
   document.getElementById("patwariImage").src =
