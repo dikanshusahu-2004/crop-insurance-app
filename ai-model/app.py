@@ -7,41 +7,40 @@ app = Flask(__name__)
 CORS(app)  # 🔥 FIX
 
 def check_damage(file):
+
     image = Image.open(file).convert("RGB")
     image = image.resize((224, 224))
-    img = np.array(image)
+    img = np.array(image) / 255.0
 
-    # 🔥 focus only bottom (crop area)
-    img = img[120:224, :, :]
+    r = img[:, :, 0]
+    g = img[:, :, 1]
+    b = img[:, :, 2]
 
-    # convert to HSV
-    import cv2
-    hsv = cv2.cvtColor(img, cv2.COLOR_RGB2HSV)
+    # Green score
+    green_score = np.mean(g - r)
 
-    # GREEN RANGE
-    green_lower = np.array([35, 40, 40])
-    green_upper = np.array([85, 255, 255])
+    # Brown (dry)
+    brown_mask = (r > 0.4) & (g > 0.2) & (g < 0.5)
+    brown_score = np.mean(brown_mask)
 
-    # BROWN / DRY RANGE
-    brown_lower = np.array([10, 50, 50])
-    brown_upper = np.array([30, 255, 200])
+    # 🔥 Water detection
+    water_mask = (b > 0.4) & (g > 0.3) & (r < 0.3)
+    water_score = np.mean(water_mask)
 
-    green_mask = cv2.inRange(hsv, green_lower, green_upper)
-    brown_mask = cv2.inRange(hsv, brown_lower, brown_upper)
+    print("Green:", green_score, "Brown:", brown_score, "Water:", water_score)
 
-    green_ratio = np.sum(green_mask > 0) / green_mask.size
-    brown_ratio = np.sum(brown_mask > 0) / brown_mask.size
+    # 🔥 FINAL LOGIC
+    if water_score > 0.25:
+        return "Water Damaged 🌊"
 
-    print("Green:", green_ratio, "Brown:", brown_ratio)
-
-    # 🔥 FINAL DECISION
-    if brown_ratio > 0.20:
-        return "Damaged"
-    elif green_ratio > 0.25:
+    elif green_score > 0.15 and brown_score < 0.2:
         return "Healthy"
-    else:
-        return "Partially Damaged"
 
+    elif brown_score > 0.4:
+        return "Damaged"
+
+    else:
+        return "Moderately Damaged"
 @app.route("/", methods=["GET"])
 def home():
     return "AI API Running 🚀"

@@ -137,21 +137,37 @@ async function uploadImage() {
             body: formData
         });
 
-        const data = await res.json();
+       const data = await res.json();
 
-        console.log("AI RESPONSE:", data);
+console.log("AI RESPONSE:", data);
 
-        const result = (data.prediction || "").toLowerCase();
+const result = (data.prediction || "").toLowerCase();
 
-        document.getElementById("result").innerText = "Result: " + result;
+document.getElementById("result").innerText = "Result: " + result;
 
-        if (result.includes("damage")) {
-            alert("Crop Damaged ⚠️ Redirecting to Claim...");
-            window.location.href = "claim.html";
-        } else {
-            alert("Crop Healthy ✅");
-        }
+// 🔥 UPDATED LOGIC
 
+if (result.includes("water")) {
+
+    alert("🌊 Crop Water Damaged (Flood Impact)");
+
+}
+else if (result.includes("moderate")) {
+
+    alert("⚠️ Crop Moderately Damaged");
+
+}
+else if (result.includes("damage")) {
+
+    alert("❌ Crop Damaged → Redirecting...");
+    window.location.href = "claim.html";
+
+}
+else {
+
+    alert("Crop Healthy ✅");
+
+}
     } catch (err) {
         console.error("ERROR:", err);
         alert("Upload failed ❌");
