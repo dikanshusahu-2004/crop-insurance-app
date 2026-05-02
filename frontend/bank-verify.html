@@ -24,9 +24,20 @@ img{border-radius:10px;margin-top:10px;}
 <h5>Farmer Details</h5>
 <p><b>Name:</b> <span id="name"></span></p>
 <p><b>Mobile:</b> <span id="mobile"></span></p>
+
+
+<h5 class="text-warning">Land Details</h5>
+<p><b>Land Area:</b> <span id="land"></span></p>
+<p><b>Location:</b> <span id="location"></span></p>
+
+<h5 class="text-info">Bank Details</h5>
+<p><b>Bank:</b> <span id="bank"></span></p>
 <p><b>Account:</b> <span id="account"></span></p>
 <p><b>IFSC:</b> <span id="ifsc"></span></p>
 
+<h5 class="text-dark">Insurance Details</h5>
+<p><b>Policy:</b> <span id="policy"></span></p>
+<p><b>Sum Insured:</b> <span id="sum"></span></p>
 <hr>
 
 <h5>Crop Info</h5>
@@ -83,6 +94,15 @@ async function loadDetails(){
   document.getElementById("account").innerText = item.account_number;
   document.getElementById("ifsc").innerText = item.ifsc_code;
   document.getElementById("crop").innerText = item.crop_name;
+
+   document.getElementById("land").innerText = item.land_area;
+    document.getElementById("location").innerText = item.land_location;
+
+    document.getElementById("bank").innerText = item.bank_name;
+   
+
+    document.getElementById("policy").innerText = item.policy_number;
+    document.getElementById("sum").innerText = item.sum_insured;
 
   const baseURL = "https://crop-insurance-app.onrender.com";
 
