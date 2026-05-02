@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from PIL import Image
 import numpy as np
 
 app = Flask(__name__)
+CORS(app)  # 🔥 FIX
 
 def check_damage(file):
     image = Image.open(file).convert("RGB")
