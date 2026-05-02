@@ -8,9 +8,9 @@ const Claim = require("../models/Application");
 
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
+ destination: function (req, file, cb) {
+  cb(null, path.join(__dirname, "../uploads"));
+} ,
   filename: function (req, file, cb) {
     cb(null, Date.now() + "-" + file.originalname);
   }
@@ -35,6 +35,10 @@ router.post("/", upload.single("damage_image"), async (req, res) => {
 
     console.log("REQ BODY:", req.body);
     console.log("REQ FILE:", req.file);
+
+    if (!req.file) {
+  return res.status(400).json({ error: "Image not uploaded" });
+}
 
     try {
 

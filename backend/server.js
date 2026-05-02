@@ -3,7 +3,11 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
 require("dotenv").config();
+const fs = require("fs");
 
+if (!fs.existsSync("uploads")) {
+  fs.mkdirSync("uploads");
+}
 const app = express();
 
 // ✅ CORS
@@ -26,8 +30,9 @@ mongoose.connect(process.env.MONGO_URI)
 app.use("/api/app", require("./routes/app"));
 app.use("/api/claim", require("./routes/claim"));
 app.use("/api/auth", require("./routes/auth"));
-app.use("/uploads", express.static("uploads"));
+const path = require("path");
 
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ✅ frontend serve
 app.use(express.static(path.join(__dirname, "../frontend")));
