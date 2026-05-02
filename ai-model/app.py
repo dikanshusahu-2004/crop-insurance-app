@@ -9,17 +9,14 @@ def check_damage(file):
     image = image.resize((224, 224))
     img = np.array(image)
 
-    # 🔥 ONLY LOWER PART (crop area)
-    img = img[100:224, :, :]   # top remove (sky cut)
+    # 🔥 ONLY LOWER AREA (crop focus)
+    img = img[120:224, :, :]
 
     R = img[:, :, 0]
     G = img[:, :, 1]
     B = img[:, :, 2]
 
-    # Green detection
     green_mask = (G > R) & (G > B) & (G > 100)
-
-    # Brown detection (dry crop)
     brown_mask = (R > 100) & (G < 130) & (B < 100)
 
     green_ratio = np.sum(green_mask) / img.size
@@ -27,10 +24,10 @@ def check_damage(file):
 
     print("Green:", green_ratio, "Brown:", brown_ratio)
 
-    # 🔥 Better logic
-    if brown_ratio > 0.4:
+    # 🔥 UPDATED LOGIC (important)
+    if brown_ratio > 0.12:
         return "Damaged"
-    elif green_ratio > 0.5:
+    elif green_ratio > 0.3:
         return "Healthy"
     else:
         return "Partially Damaged"
