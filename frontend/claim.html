@@ -26,7 +26,7 @@ h5 {
 
 <h3 class="text-success mb-4 text-center">🌾 PMFBY Smart Claim Form</h3>
 
-<form id="claimForm">
+<form id="claimForm" enctype="multipart/form-data">
 
 <!-- Farmer -->
 <h5 class="text-primary">1️⃣ Farmer Details</h5>
@@ -55,7 +55,7 @@ h5 {
 <!-- Damage -->
 <h5 class="text-primary">4️⃣ Upload Crop Damage Image</h5>
 
-<input type="file" id="image" class="form-control mb-3" required>
+<input type="file" name="damage_image" id="image" class="form-control mb-3" required>
 
 <!-- Bank -->
 <h5 class="text-primary">5️⃣ Bank Details</h5>

@@ -48,7 +48,7 @@
 
 <!-- Survey Image -->
 <h5 class="text-primary">Patwari Survey Image</h5>
-<input type="file" id="verifyImage" class="form-control mb-2">
+<input type="file" name="verify_image" id="verifyImage" class="form-control mb-2">
 
 <img id="preview" width="250">
 
@@ -115,40 +115,31 @@ document.getElementById("verifyImage").addEventListener("change", function(e){
 });
 
 // ✅ APPROVE WITH GPS
-async function approve(){
+async function approve() {
 
-    const file = document.getElementById("verifyImage").files[0];
+  const file = document.getElementById("verifyImage").files[0];
 
-    if(!file){
-        alert("Upload survey image ❌");
-        return;
-    }
+  if (!file) {
+    alert("Upload survey image ❌");
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append("verify_image", file);
+  const formData = new FormData();
+  formData.append("verify_image", file);
 
-    // GPS
-    navigator.geolocation.getCurrentPosition(async (pos) => {
+  navigator.geolocation.getCurrentPosition(async (pos) => {
 
-        formData.append("lat", pos.coords.latitude);
-        formData.append("lon", pos.coords.longitude);
+    formData.append("lat", pos.coords.latitude);
+    formData.append("lon", pos.coords.longitude);
 
-        const res = await fetch(
-            `https://crop-insurance-app.onrender.com/api/claim/patwari/${id}`,
-            {
-                method: "PUT",
-                body: formData
-            }
-        );
-
-        const data = await res.json();
-
-        alert("Approved with GPS ✅");
-        window.location.href = "patwari-dashboard.html";
-
-    }, () => {
-        alert("GPS permission denied ❌");
+    await fetch(`https://crop-insurance-app.onrender.com/api/claim/patwari/${id}`, {
+      method: "PUT",
+      body: formData
     });
+
+    alert("Patwari Verified ✅");
+
+  });
 
 }
 
