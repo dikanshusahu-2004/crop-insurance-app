@@ -1,31 +1,44 @@
 from flask import Flask, request, jsonify
 from PIL import Image
 import numpy as np
-import io
 
 app = Flask(__name__)
 
-# 🔥 Lightweight logic (green color based)
 def check_damage(file):
     image = Image.open(file).convert("RGB")
     image = image.resize((224, 224))
-    img_array = np.array(image)
+    img = np.array(image)
 
-    # Green channel average निकालो
-    green_avg = np.mean(img_array[:, :, 1])
+    # RGB channels
+    R = img[:, :, 0]
+    G = img[:, :, 1]
+    B = img[:, :, 2]
 
-    # Threshold (tune कर सकते हो)
-    if green_avg > 100:
+    # 🔥 Green detection
+    green_mask = (G > R) & (G > B) & (G > 100)
+
+    # 🔥 Brown / dry detection
+    brown_mask = (R > 100) & (G < 120) & (B < 100)
+
+    green_ratio = np.sum(green_mask) / (224 * 224)
+    brown_ratio = np.sum(brown_mask) / (224 * 224)
+
+    print("Green:", green_ratio, "Brown:", brown_ratio)
+
+    # 🔥 Decision logic
+    if green_ratio > 0.5:
         return "Healthy"
-    else:
+    elif brown_ratio > 0.3:
         return "Damaged"
+    else:
+        return "Partially Damaged"
 
-# Root (health check)
+
 @app.route("/", methods=["GET"])
 def home():
     return "AI API Running 🚀"
 
-# Prediction API
+
 @app.route("/predict", methods=["POST"])
 def predict():
     if "image" not in request.files:
