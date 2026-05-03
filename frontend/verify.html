@@ -104,8 +104,10 @@ if (!id) {
 // 🔥 LOAD DATA
 async function loadDetails(){
 
-    const res = await fetch(`https://crop-insurance-app.onrender.com/api/claim/${id}`);
-const item = await res.json();
+    const res = await fetch("https://crop-insurance-app.onrender.com/api/claim");
+    const data = await res.json();
+
+    const item = data.find(x => x._id === id);
     if (!item) {
   alert("Data not found ❌");
   return;
