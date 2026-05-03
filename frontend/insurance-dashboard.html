@@ -80,9 +80,8 @@ async function loadData(){
   document.getElementById("data").innerHTML = output;
 }
 
-function view(id){
-  localStorage.setItem("claimId", id);
-  window.location.href = "insurance-verify.html";
+function verify(id){
+  window.location.href = 'insurance-verify.html?id=${id}';
 }
 
 loadData();
