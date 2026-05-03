@@ -104,10 +104,8 @@ if (!id) {
 // 🔥 LOAD DATA
 async function loadDetails(){
 
-    const res = await fetch("https://crop-insurance-app.onrender.com/api/claim");
-    const data = await res.json();
-
-    const item = data.find(x => x._id === id);
+    const res = await fetch(`https://crop-insurance-app.onrender.com/api/claim/${id}`);
+const item = await res.json();
     if (!item) {
   alert("Data not found ❌");
   return;
@@ -130,6 +128,10 @@ async function loadDetails(){
 
     document.getElementById("policy").innerText = item.policy_number;
     document.getElementById("sum").innerText = item.sum_insured;
+
+
+    document.getElementById("notes").innerText = item.patwariNotes;
+    document.getElementById("yield").innerText = item.actualYield;
 
     const baseURL = "https://crop-insurance-app.onrender.com";
 
