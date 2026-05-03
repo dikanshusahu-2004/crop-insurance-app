@@ -68,10 +68,11 @@
 <hr>
 
 <!-- Notes -->
-<p><strong>📄 Patwari Notes:</strong> <span id="notes"></span></p>
+<label>Survey Notes</label>
+<textarea id="notesInput" class="form-control"></textarea>
 
-<p><strong>🌾 Actual Yield:</strong> <span id="yield"></span></p>
-
+<label class="mt-2">Actual Yield</label>
+<input type="number" id="yieldInput" class="form-control">
 <!-- Buttons -->
 <button onclick="approve()" class="btn btn-success mt-3 w-100">
     Approve Claim
