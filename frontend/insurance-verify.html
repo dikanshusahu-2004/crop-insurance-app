@@ -75,7 +75,10 @@ Back
 
 <script>
 
-const id = localStorage.getItem("claimId");
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+console.log("INSURANCE ID:", id);
 
 async function loadDetails(){
 
@@ -105,6 +108,9 @@ if(!item){
 
     document.getElementById("policy").innerText = item.policy_number;
     document.getElementById("sum").innerText = item.sum_insured;
+
+    document.getElementById("notes").innerText = item.patwariNotes || "Not available";
+    document.getElementById("yield").innerText = item.actualYield || "Not available";
 
   if(item.image){
   document.getElementById("farmerImage").src =
