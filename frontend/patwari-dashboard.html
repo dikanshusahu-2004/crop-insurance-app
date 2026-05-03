@@ -112,8 +112,7 @@ async function loadData(){
 }
 
 function verify(id){
-  localStorage.setItem("claimId", id);
-  window.location.href = "verify.html";
+  window.location.href = `verify.html?id=${id}`;
 }
 
 function logout(){

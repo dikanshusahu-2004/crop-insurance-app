@@ -147,36 +147,67 @@ document.getElementById("verifyImage").addEventListener("change", function(e){
 // ✅ APPROVE WITH GPS
 async function approve() {
 
-  const file = document.getElementById("verifyImage").files[0];
+    const file = document.getElementById("verifyImage").files[0];
+    const notes = document.getElementById("notesInput").value;
+    const yieldVal = document.getElementById("yieldInput").value;
 
-  const notes = document.getElementById("notesInput").value;
-  const yieldVal = document.getElementById("yieldInput").value;
+    // 🔥 GET ID FROM URL
+    const id = new URLSearchParams(window.location.search).get("id");
 
-  if (!file) {
-    alert("Upload survey image ❌");
-    return;
-  }
+    console.log("ID:", id);
 
-  const formData = new FormData();
-  formData.append("verify_image", file);
+    if (!id) {
+        alert("ID missing ❌");
+        return;
+    }
 
-  formData.append("patwariNotes", notes);
-  formData.append("actualYield", yieldVal);
+    if (!file) {
+        alert("Upload survey image ❌");
+        return;
+    }
 
-  navigator.geolocation.getCurrentPosition(async (pos) => {
+    const formData = new FormData();
+    formData.append("verify_image", file);
+    formData.append("patwariNotes", notes);
+    formData.append("actualYield", yieldVal);
 
-    formData.append("lat", pos.coords.latitude);
-    formData.append("lon", pos.coords.longitude);
+    console.log("NOTES:", notes);
+    console.log("YIELD:", yieldVal);
 
-   await fetch(`https://crop-insurance-app.onrender.com/api/claim/patwari/${id}`, {
-  method: "PUT",
-  body: formData
-});
+    console.log("FORM DATA CHECK");
+        for (let pair of formData.entries()) {
+    console.log(pair[0], pair[1]);
+   }
 
-    alert("Patwari Verified ✅");
-window.location.href = "patwari-dashboard.html";
+    navigator.geolocation.getCurrentPosition(async (pos) => {
 
-  });
+        formData.append("lat", pos.coords.latitude);
+        formData.append("lon", pos.coords.longitude);
+
+        // 🔥 DEBUG CHECK
+        for (let pair of formData.entries()) {
+            console.log(pair[0], pair[1]);
+        }
+
+        try {
+
+            const res = await fetch(`https://crop-insurance-app.onrender.com/api/claim/patwari/${id}`, {
+                method: "PUT",
+                body: formData
+            });
+
+            const data = await res.json();
+            console.log("RESPONSE:", data);
+
+            alert("Patwari Verified ✅");
+            window.location.href = "patwari-dashboard.html";
+
+        } catch (err) {
+            console.error("ERROR:", err);
+            alert("Failed ❌");
+        }
+
+    });
 
 }
 
