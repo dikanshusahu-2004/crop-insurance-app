@@ -81,50 +81,50 @@ const id = params.get("id");
 console.log("INSURANCE ID:", id);
 
 async function loadDetails(){
+  const res = await fetch(
+  'https://crop-insurance-app.onrender.com/api/claim/${id}'
+);
 
-  const res = await fetch("https://crop-insurance-app.onrender.com/api/claim");
-  const data = await res.json();
+  const item = await res.json();
 
-  const item = data.find(x => x._id === id);
+  if(!item){
+    alert("Data not found ❌");
+    return;
+  }
 
-if(!item){
-  alert("Data not found ❌");
-  return;
-}
- console.log("Patwari Image:", item.verify_image);
+  console.log("FULL ITEM:", item);
 
   document.getElementById("name").innerText = item.name;
   document.getElementById("mobile").innerText = item.mobile;
   document.getElementById("village").innerText = item.village;
-
   document.getElementById("crop").innerText = item.crop_name;
 
-   document.getElementById("land").innerText = item.land_area;
-    
+  document.getElementById("land").innerText = item.land_area;
 
-    document.getElementById("bank").innerText = item.bank_name;
-    document.getElementById("account").innerText = item.account_number;
-    document.getElementById("ifsc").innerText = item.ifsc_code;
+  document.getElementById("bank").innerText = item.bank_name;
+  document.getElementById("account").innerText = item.account_number;
+  document.getElementById("ifsc").innerText = item.ifsc_code;
 
-    document.getElementById("policy").innerText = item.policy_number;
-    document.getElementById("sum").innerText = item.sum_insured;
+  document.getElementById("policy").innerText = item.policy_number;
+  document.getElementById("sum").innerText = item.sum_insured;
 
-    document.getElementById("notes").innerText = item.patwariNotes || "Not available";
-    document.getElementById("yield").innerText = item.actualYield || "Not available";
+  document.getElementById("notes").innerText =
+    item.patwariNotes || "Not available";
+
+  document.getElementById("yield").innerText =
+    item.actualYield || "Not available";
+
+  const base = "https://crop-insurance-app.onrender.com/uploads/";
 
   if(item.image){
-  document.getElementById("farmerImage").src =
-    "https://crop-insurance-app.onrender.com/uploads/" + item.image;
-}
+    document.getElementById("farmerImage").src = base + item.image;
+  }
 
   if(item.verify_image){
-  document.getElementById("patwariImage").src =
-    "https://crop-insurance-app.onrender.com/uploads/" + item.verify_image;
-}else{
-  document.getElementById("patwariImage").src = "";
+    document.getElementById("patwariImage").src = base + item.verify_image;
+  }
 }
  
-}
 
 // ✅ APPROVE
 async function approve(){
