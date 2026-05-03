@@ -82,7 +82,7 @@ console.log("INSURANCE ID:", id);
 
 async function loadDetails(){
   const res = await fetch(
-  'https://crop-insurance-app.onrender.com/api/claim/${id}'
+  `https://crop-insurance-app.onrender.com/api/claim/${id}`
 );
 
   const item = await res.json();
