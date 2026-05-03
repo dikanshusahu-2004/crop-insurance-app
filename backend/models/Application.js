@@ -37,13 +37,18 @@ yield: String,
   policy_number: String,
   sum_insured: String,
 
+  // 🔥 NEW FIELDS
+  patwariNotes: String,
+  actualYield: String,
+
   // Status
   status: {
     patwari: { type: String, default: "Pending" },
     insurance: { type: String, default: "Pending" },
     bank: { type: String, default: "Pending" }
   }
-
+  
+  
   
 
 });

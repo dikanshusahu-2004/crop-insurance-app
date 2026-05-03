@@ -53,7 +53,9 @@ img{border-radius:10px;margin-top:10px;}
 
 <hr>
 
+<p><strong>📝 Patwari Notes:</strong> <span id="notes"></span></p>
 
+<p><strong>🌾 Actual Yield:</strong> <span id="yield"></span></p>
 
 <hr>
 
@@ -101,6 +103,10 @@ async function loadDetails(){
 
     document.getElementById("policy").innerText = item.policy_number;
     document.getElementById("sum").innerText = item.sum_insured;
+
+    document.getElementById("notes").innerText = item.patwariNotes;
+
+    document.getElementById("yield").innerText = item.actualYield;
 
   const baseURL = "https://crop-insurance-app.onrender.com";
 
