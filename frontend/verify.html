@@ -91,7 +91,14 @@
 </div>
 
 <script>
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
 
+console.log("GLOBAL ID:", id);
+
+if (!id) {
+    alert("ID missing ❌");
+}
 
 
 // 🔥 LOAD DATA
@@ -146,8 +153,7 @@ async function approve() {
     const notes = document.getElementById("notesInput").value;
     const yieldVal = document.getElementById("yieldInput").value;
 
-    // 🔥 GET ID FROM URL
-    const id = new URLSearchParams(window.location.search).get("id");
+    
 
     console.log("ID:", id);
 
