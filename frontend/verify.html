@@ -103,14 +103,16 @@ if (!id) {
 // 🔥 LOAD DATA
 async function loadDetails(){
 
-    const res = await fetch("https://crop-insurance-app.onrender.com/api/claim");
-    const data = await res.json();
+    const res = await fetch(
+      `https://crop-insurance-app.onrender.com/api/claim/${id}`
+    );
 
-    const item = data.find(x => x._id === id);
+    const item = await res.json();
+
     if (!item) {
-  alert("Data not found ❌");
-  return;
-}
+        alert("Data not found ❌");
+        return;
+    }
 
     document.getElementById("name").innerText = item.name;
     document.getElementById("mobile").innerText = item.mobile;
@@ -119,9 +121,8 @@ async function loadDetails(){
 
     document.getElementById("crop").innerText = item.crop_name;
     document.getElementById("season").innerText = item.season;
-     
+
     document.getElementById("land").innerText = item.land_area;
-  
 
     document.getElementById("bank").innerText = item.bank_name;
     document.getElementById("account").innerText = item.account_number;
@@ -130,17 +131,16 @@ async function loadDetails(){
     document.getElementById("policy").innerText = item.policy_number;
     document.getElementById("sum").innerText = item.sum_insured;
 
+    // 🔥 FIX IMAGE
+    if(item.image){
+        document.getElementById("farmerImage").src =
+        "https://crop-insurance-app.onrender.com/uploads/" + item.image;
+    } else {
+        document.getElementById("farmerImage").src = "";
+    }
 
-    document.getElementById("notes").innerText = item.patwariNotes;
-    document.getElementById("yield").innerText = item.actualYield;
-
-    const baseURL = "https://crop-insurance-app.onrender.com";
-
-document.getElementById("farmerImage").src =
-    "https://crop-insurance-app.onrender.com/uploads/" + item.image;
     console.log("Farmer Image:", item.image);
 }
-
 // 🔥 IMAGE PREVIEW
 document.getElementById("verifyImage").addEventListener("change", function(e){
     const file = e.target.files[0];
