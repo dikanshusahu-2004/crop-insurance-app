@@ -98,8 +98,9 @@ router.put("/patwari/:id", upload.single("verify_image"), async (req, res) => {
 
         verify_image: req.file ? req.file.filename : "",
 
-        notes: req.body.notes || "",
-        yield: req.body.yield || "",
+        //🔥 FIX HERE
+        patwariNotes: req.body.patwariNotes || "",
+        actualYield: req.body.actualYield || "",
 
         lat: req.body.lat || "",
         lon: req.body.lon || "",

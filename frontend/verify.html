@@ -157,6 +157,9 @@ async function approve() {
   const formData = new FormData();
   formData.append("verify_image", file);
 
+  formData.append("patwariNotes", notes);
+  formData.append("actualYield", yieldVal);
+
   navigator.geolocation.getCurrentPosition(async (pos) => {
 
     formData.append("lat", pos.coords.latitude);
