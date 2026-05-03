@@ -16,6 +16,9 @@ def check_damage(file):
     g = img[:, :, 1]
     b = img[:, :, 2]
 
+    # 🔥 NDVI-like index
+    ndvi = np.mean((g - r) / (g + r + 0.01))
+
     # Green score
     green_score = np.mean(g - r)
 
@@ -23,22 +26,31 @@ def check_damage(file):
     brown_mask = (r > 0.4) & (g > 0.2) & (g < 0.5)
     brown_score = np.mean(brown_mask)
 
-    # 🔥 Water detection
+    # Water detection
     water_mask = (b > 0.4) & (g > 0.3) & (r < 0.3)
     water_score = np.mean(water_mask)
 
-    print("Green:", green_score, "Brown:", brown_score, "Water:", water_score)
+    print("NDVI:", ndvi, "Green:", green_score, "Brown:", brown_score, "Water:", water_score)
 
     # 🔥 FINAL LOGIC
+
+    # 🌊 Water damage
     if water_score > 0.25:
         return "Water Damaged 🌊"
 
-    elif green_score > 0.15 and brown_score < 0.2:
+    # 🌿 Healthy crop
+    elif ndvi > 0.1:
         return "Healthy"
 
-    elif brown_score > 0.4:
+    # 🌾 Mature crop (yellow rice)
+    elif ndvi > 0 and brown_score < 0.3:
+        return "Mature 🌾"
+
+    # ❌ Damaged crop
+    elif brown_score > 0.35:
         return "Damaged"
 
+    # ⚠️ Partial damage
     else:
         return "Moderately Damaged"
 @app.route("/", methods=["GET"])
