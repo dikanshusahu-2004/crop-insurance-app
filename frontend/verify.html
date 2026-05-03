@@ -149,6 +149,9 @@ async function approve() {
 
   const file = document.getElementById("verifyImage").files[0];
 
+  const notes = document.getElementById("notesInput").value;
+  const yieldVal = document.getElementById("yieldInput").value;
+
   if (!file) {
     alert("Upload survey image ❌");
     return;
